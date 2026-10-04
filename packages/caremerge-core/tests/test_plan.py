@@ -159,3 +159,23 @@ def test_temporary_change_started_before_the_window_is_clipped(commit: Builder) 
         (date(2026, 10, 22), WINDOW.end, ("continue",)),
     ]
     assert segments[0].origin_start == date(2026, 10, 10)
+
+
+def test_plan_ignores_unverified_and_rejected_commits(commit: Builder) -> None:
+    keep = commit("cc_keep", attributes=Attributes(action=MedAction.CONTINUE))
+    pending = commit(
+        "cc_pending", attributes=Attributes(action=MedAction.STOP), state=ReviewState.CANDIDATE
+    )
+    rejected = commit(
+        "cc_rejected",
+        attributes=Attributes(action=MedAction.HOLD),
+        effective=Effective(start=date(2026, 10, 19)),
+        temporary=True,
+        state=ReviewState.REJECTED,
+    )
+    (entry,) = plan_at([keep, pending, rejected], date(2026, 10, 19), TZ)
+    assert (entry.values, entry.commit_ids, entry.temporary) == (
+        ("continue",),
+        ("cc_keep",),
+        False,
+    )

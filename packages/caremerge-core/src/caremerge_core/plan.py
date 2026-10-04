@@ -92,7 +92,11 @@ class _Span:
 
 
 def known(commits: Iterable[CareCommit], before: datetime | None = None) -> list[CareCommit]:
-    """Return active commits, optionally only those captured before ``before``."""
+    """Return active commits, optionally only those captured strictly before ``before``.
+
+    To diff "since the last session", pass the newest session's ``captured_at``:
+    what was captured before it is what was known at the previous session.
+    """
     return [
         commit
         for commit in commits
@@ -152,14 +156,17 @@ def schedule(
 ) -> tuple[Segment, ...]:
     """Lay out one entity dimension's values over ``window``.
 
-    Temporary commits override persistent ones inside their interval (a branch).
+    Only active (verified or corrected) commits count, so candidates and
+    rejected commits never reach the plan. Temporary commits override
+    persistent ones inside their interval (a branch).
     Overlapping persistent commits with different values yield one segment
     holding every value; detecting that as a conflict is feature F9.
     """
     spans = [
         _span(commit, value, tz)
         for commit in commits
-        if commit.entity_id == entity_id
+        if commit.is_active
+        and commit.entity_id == entity_id
         and (value := dimension_values(commit).get(dimension)) is not None
     ]
     cuts = {window.start, window.end}
@@ -174,7 +181,7 @@ def schedule(
 
 
 def plan_at(commits: Sequence[CareCommit], day: date, tz: ZoneInfo) -> tuple[PlanEntry, ...]:
-    """Return every entity dimension's value(s) on ``day``."""
+    """Return every entity dimension's value(s) on ``day``, from active commits."""
     window = DateWindow(start=day, end=day + timedelta(days=1))
     entries: list[PlanEntry] = []
     for entity_id, dimension in dimension_keys(commits):

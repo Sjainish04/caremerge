@@ -128,3 +128,36 @@ def test_unverified_candidates_never_change_the_diff(commit: Builder) -> None:
         [keep, pending], known_before=SCENE_2_AT, window=WINDOW, tz=TZ, entity_names=NAMES
     )
     assert diff.entries == ()
+
+
+def test_change_in_effect_on_the_first_day_is_not_future_effective(commit: Builder) -> None:
+    keep = commit("cc_keep", attributes=Attributes(action=MedAction.CONTINUE))
+    hold = commit(
+        "cc_hold",
+        attributes=Attributes(action=MedAction.HOLD),
+        effective=Effective(start=date(2026, 10, 10), end=date(2026, 10, 21)),
+        temporary=True,
+        captured_at=SCENE_2_AT,
+        source_id="src_2",
+    )
+    (entry,) = care_diff(
+        [keep, hold], known_before=SCENE_2_AT, window=WINDOW, tz=TZ, entity_names=NAMES
+    ).entries
+    assert (entry.change, entry.future_effective) == (ChangeType.CHANGED, False)
+
+
+def test_entities_sharing_a_name_are_ordered_by_id(commit: Builder) -> None:
+    entity_ids = [f"ent_{letter}" for letter in "hcfadgbe"]
+    procedures = [
+        commit(
+            f"cc_{entity_id}",
+            kind=CommitKind.PROCEDURE,
+            entity_id=entity_id,
+            subject_text="procedure",
+            attributes=Attributes(scheduled_for=date(2026, 10, 28)),
+        )
+        for entity_id in entity_ids
+    ]
+    names = dict.fromkeys(entity_ids, "Procedure")
+    diff = care_diff(procedures, known_before=None, window=WINDOW, tz=TZ, entity_names=names)
+    assert [entry.entity_id for entry in diff.entries] == sorted(entity_ids)

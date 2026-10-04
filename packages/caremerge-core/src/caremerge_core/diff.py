@@ -2,11 +2,12 @@
 
 The diff compares schedules computed from what was known *before* a moment
 with what is known now, over the same window of days. Output order is
-deterministic: entity name, then dimension order.
+deterministic: entity name, then entity ID (for entities that share a
+name), then dimension order.
 """
 
 from collections.abc import Mapping, Sequence
-from datetime import datetime
+from datetime import date, datetime
 from zoneinfo import ZoneInfo
 
 from pydantic import BaseModel, ConfigDict
@@ -24,7 +25,11 @@ from caremerge_core.plan import (
 
 
 class DiffEntry(BaseModel):
-    """How one entity dimension's schedule changed."""
+    """How one entity dimension's schedule changed.
+
+    ``future_effective`` is True when the plan on the window's first day is
+    unchanged, so the change only takes effect later.
+    """
 
     model_config = ConfigDict(frozen=True)
 
@@ -57,14 +62,19 @@ def care_diff(
 ) -> CareDiff:
     """Compare the plan known before ``known_before`` with the plan known now.
 
-    With ``known_before=None`` nothing counts as previously known, so every
-    stated dimension appears as added.
+    ``known_before`` is exclusive: to diff since the last session, pass the
+    newest session's ``captured_at``. With ``known_before=None`` nothing
+    counts as previously known, so every stated dimension appears as added.
     """
     before = known(commits, before=known_before) if known_before else []
     after = known(commits)
     keys = sorted(
         set(dimension_keys(before)) | set(dimension_keys(after)),
-        key=lambda key: (entity_names.get(key[0], key[0]).casefold(), DIMENSION_ORDER[key[1]]),
+        key=lambda key: (
+            entity_names.get(key[0], key[0]).casefold(),
+            key[0],
+            DIMENSION_ORDER[key[1]],
+        ),
     )
     entries = [
         entry
@@ -100,7 +110,15 @@ def _entry(
         change=change,
         before=old,
         after=new,
-        future_effective=any(segment.start > window.start for segment in changed),
+        future_effective=_holding(old, window.start) == _holding(new, window.start),
         temporary=any(segment.temporary for segment in changed),
         end_not_captured=any(segment.temporary and not segment.end_captured for segment in changed),
     )
+
+
+def _holding(segments: Sequence[Segment], day: date) -> tuple[tuple[str, ...], bool, bool] | None:
+    """Return what holds on ``day``: the covering segment's values and flags."""
+    for segment in segments:
+        if segment.start <= day < segment.end:
+            return (segment.values, segment.temporary, segment.end_captured)
+    return None

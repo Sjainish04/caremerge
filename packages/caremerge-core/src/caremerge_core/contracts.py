@@ -6,9 +6,9 @@ tracks (spec §15.3). Unknown fields are rejected, so malformed model output
 fails validation instead of slipping through.
 """
 
-from datetime import date, datetime
+from datetime import date
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import AwareDatetime, BaseModel, ConfigDict, Field, model_validator
 
 from caremerge_core.enums import (
     CommitKind,
@@ -43,7 +43,7 @@ class SourcePayload(ContractModel):
     """The minimized source sent for extraction (spec §7.5)."""
 
     source_id: str
-    captured_at: datetime
+    captured_at: AwareDatetime
     role: Role
     label: str
     utterances: tuple[Utterance, ...] = Field(min_length=1)
@@ -85,6 +85,13 @@ class Effective(ContractModel):
     end_condition: str | None = None
     date_basis: DateBasis = DateBasis.NONE
     date_raw: str | None = None
+
+    @model_validator(mode="after")
+    def _check_order(self) -> "Effective":
+        if self.start and self.end and self.end < self.start:
+            msg = "effective end must not be before its start"
+            raise ValueError(msg)
+        return self
 
 
 class Evidence(ContractModel):

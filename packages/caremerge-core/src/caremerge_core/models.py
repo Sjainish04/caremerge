@@ -2,12 +2,13 @@
 
 Records are immutable. A state change produces a new instance (via
 ``model_copy(update=...)``) that the repository persists (spec §9.2, §10).
+Timestamps must carry a timezone, so capture dates and alarms are never
+read in whatever zone the host happens to use.
 """
 
-from datetime import datetime
 from typing import Literal
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import AwareDatetime, BaseModel, ConfigDict, Field
 
 from caremerge_core.contracts import (
     Attributes,
@@ -48,7 +49,7 @@ class SourceEvent(RecordModel):
     source_id: str
     bee_type: BeeItemType
     bee_id: str
-    captured_at: datetime
+    captured_at: AwareDatetime
     role: Role
     label: str
     utterances: tuple[Utterance, ...] = Field(min_length=1)
@@ -89,7 +90,7 @@ class SourceRef(RecordModel):
     source_id: str
     role: Role
     label: str
-    captured_at: datetime
+    captured_at: AwareDatetime
     evidence: tuple[Evidence, ...] = Field(min_length=1)
 
 
@@ -97,7 +98,7 @@ class Review(RecordModel):
     """The commit's current review state."""
 
     state: ReviewState = ReviewState.CANDIDATE
-    at: datetime | None = None
+    at: AwareDatetime | None = None
 
 
 class Edges(RecordModel):
@@ -134,7 +135,7 @@ class ReviewEvent(RecordModel):
 
     commit_id: str
     state: ReviewState
-    at: datetime
+    at: AwareDatetime
     attributes: Attributes | None = None
     effective: Effective | None = None
 
@@ -150,7 +151,7 @@ class Issue(RecordModel):
     status: IssueStatus
     message: str
     question: str
-    created_at: datetime
+    created_at: AwareDatetime
 
 
 class Action(RecordModel):
@@ -160,12 +161,12 @@ class Action(RecordModel):
     template_id: TemplateId
     params: dict[str, str]
     text: str
-    alarm_at: datetime
+    alarm_at: AwareDatetime
     issue_ids: tuple[str, ...] = ()
     commit_ids: tuple[str, ...] = ()
     state: ActionState = ActionState.PROPOSED
     confirmation_id: str | None = None
     bee_todo_id: str | None = None
-    created_at: datetime
-    executed_at: datetime | None = None
+    created_at: AwareDatetime
+    executed_at: AwareDatetime | None = None
     error_code: str | None = None
