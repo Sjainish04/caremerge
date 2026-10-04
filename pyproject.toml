@@ -1,0 +1,49 @@
+[project]
+name = "caremerge-workspace"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "caremerge-core",
+]
+
+[tool.uv.workspace]
+members = [
+    "packages/caremerge-core",
+]
+
+[tool.uv.sources]
+caremerge-core = { workspace = true }
+
+[dependency-groups]
+dev = [
+    "mypy>=2.4.0",
+    "pytest>=9.1.1",
+    "ruff>=0.16.10",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+extend-exclude = ["*.md"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "D", "N", "S", "SIM", "RUF"]
+ignore = ["D105", "D107"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["caremerge_core"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.per-file-ignores]
+"**/tests/**" = ["D", "S101"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+plugins = ["pydantic.mypy"]
+
+[tool.pytest.ini_options]
+testpaths = ["packages/caremerge-core/tests"]
+addopts = ["-q", "--import-mode=importlib"]
