@@ -1,0 +1,72 @@
+# Stack is not chosen yet, so this covers the likely candidates:
+# React Native / Vega, Android (Kotlin), Python, and AWS CDK/SAM.
+
+# --- Secrets & local config (12-factor: config lives in the environment) ---
+.env
+.env.*
+!.env.example
+*.pem
+*.p12
+*.keystore
+*.jks
+credentials.json
+token.json
+
+# --- Personal data: Bee exports, Ring clips/snapshots, recordings ---
+# Keep anything recorded from a real person here; it must never be committed.
+data/private/
+
+# --- Claude Code personal overrides ---
+.claude/settings.local.json
+CLAUDE.local.md
+
+# --- OS / editors ---
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.swp
+
+# --- Node / React Native / Vega ---
+node_modules/
+.pnpm-store/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.expo/
+dist/
+build/
+coverage/
+*.tsbuildinfo
+.metro-health-check*
+
+# --- Android / Fire OS (Gradle) ---
+.gradle/
+local.properties
+captures/
+*.apk
+*.aab
+**/android/app/build/
+.externalNativeBuild/
+.cxx/
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# --- AWS ---
+cdk.out/
+.aws-sam/
+
+# --- Demo video working files (upload the final cut to YouTube/Vimeo) ---
+demo/raw/

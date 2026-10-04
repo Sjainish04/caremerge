@@ -1,0 +1,36 @@
+name: Task
+description: A unit of work toward the hackathon submission.
+labels: ["task"]
+body:
+  - type: textarea
+    id: goal
+    attributes:
+      label: Goal
+      description: What should exist when this is done?
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Fire TV / Vega app
+        - Alexa+ (MCP server / Agent Skill / simulation)
+        - Bee integration
+        - Ring integration
+        - AWS (Bedrock / AgentCore / Strands / Kiro)
+        - Open-source contribution
+        - Demo video / submission
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: demo
+    attributes:
+      label: Demo moment
+      description: Which part of the < 3-minute video does this serve?
+  - type: textarea
+    id: done
+    attributes:
+      label: Done when
+      description: Observable acceptance criteria.

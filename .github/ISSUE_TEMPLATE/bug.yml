@@ -1,0 +1,36 @@
+name: Bug
+description: Something in our project is broken.
+labels: ["bug"]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: Include exact error text. Do not paste tokens or personal data.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect?
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1.
+        2.
+        3.
+  - type: input
+    id: env
+    attributes:
+      label: Environment
+      description: Device or simulator, OS/SDK versions, branch.
+  - type: checkboxes
+    id: upstream
+    attributes:
+      label: Upstream?
+      options:
+        - label: The root cause is in an Amazon/AWS tool, SDK, API, or doc — also add it to docs/friction-log.md

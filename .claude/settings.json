@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "WebFetch(domain:developer.amazon.com)",
+      "WebFetch(domain:developer.ring.com)",
+      "WebFetch(domain:docs.bee.computer)",
+      "WebFetch(domain:modelcontextprotocol.io)",
+      "WebFetch(domain:*.modelcontextprotocol.io)",
+      "WebFetch(domain:agentskills.io)",
+      "WebFetch(domain:docs.aws.amazon.com)",
+      "WebFetch(domain:aws.amazon.com)",
+      "WebFetch(domain:strandsagents.com)",
+      "WebFetch(domain:kiro.dev)",
+      "WebFetch(domain:amazonappdev2026.devpost.com)",
+      "WebFetch(domain:github.com)"
+    ],
+    "deny": [
+      "Read(.env)",
+      "Read(.env.local)",
+      "Read(.env.*.local)",
+      "Read(.env.production)"
+    ]
+  }
+}
