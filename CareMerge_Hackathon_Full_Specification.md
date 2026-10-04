@@ -535,13 +535,13 @@ Compatible details on different dimensions **merge**. "With food" plus "every mo
 
 - **Knowledge time** is `source.captured_at`. **Valid time** is `effective.from` to `effective.until`.
 - An instruction with no stated start is valid from its capture date (e.g., "keep taking it" said on Oct 5 starts Oct 5). An instruction with no stated end stays open-ended.
-- `known(T)`: verified or corrected commits with `captured_at ≤ T`, minus any superseded by a user-verified supersession known at T.
+- `known(T)`: verified or corrected commits with `captured_at ≤ T`, minus any superseded by a user-verified supersession known at T. In code, `known(commits, before=X)` keeps commits captured strictly before `X`, so passing the newest session's `captured_at` yields `known(T1)` for the previous session.
 - `plan_at(T, t)` maps each (entity, dimension) to the value of the persistent commits in `known(T)` whose valid interval contains `t`. A temporary commit in `known(T)` covering `t` overrides it inside its interval; this is the branch.
 - `schedule(T, entity, dim, window)` produces segments `[start, end) → value(s)` by sweeping boundary dates. An open-ended temporary segment runs to the end of the window and is flagged `end_not_captured`.
 
 ### 9.5 CareDiff
 
-`care_diff(T1, T2)` uses the window `[today, today + CAREMERGE_PLAN_HORIZON_DAYS]`. For each (entity, dimension) it compares `schedule(T1)` with `schedule(T2)` and emits **added**, **removed**, or **changed** segments with flags `future_effective`, `temporary`, and `end_not_captured`. Output is ordered by entity name, then dimension order, then segment start. "Since last session" means T1 is the previous session's `captured_at` and T2 is now.
+`care_diff(T1, T2)` uses the window `[today, today + CAREMERGE_PLAN_HORIZON_DAYS]`. For each (entity, dimension) it compares `schedule(T1)` with `schedule(T2)` and emits **added**, **removed**, or **changed** segments with flags `future_effective` (the plan on the window's first day is unchanged), `temporary`, and `end_not_captured`. Output is ordered by entity name, then entity ID (for entities that share a name), then dimension order, then segment start. "Since last session" means T1 is the previous session's `captured_at` and T2 is now; `care_diff(known_before=…)` takes the newest session's `captured_at` and keeps what was captured strictly before it, which is the same set.
 
 **Golden expectation** (fixture dates: T1 = after scene 1, T2 = after scene 2, rendered on Oct 19):
 
