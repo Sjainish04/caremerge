@@ -60,12 +60,12 @@ Fill a section in as soon as a tool enters the project; polish wording at submis
 - **Onboarding:** familiar tool.
 - **Would we build with it again?** Yes.
 
-### GitHub Actions (`actions/checkout@v7`, `astral-sh/setup-uv@v10`)
+### GitHub Actions (`actions/checkout@v7`, `astral-sh/setup-uv` v10.2.0)
 
 - **What we used it for:** CI on every push and PR (format, lint, types, tests).
 - **What worked well:** `setup-uv` plus `uv sync --locked` gives a short workflow file.
-- **What needs work:** nothing blocking so far.
-- **Onboarding:** familiar tool.
+- **What needs work:** `astral-sh/setup-uv` publishes no floating major tags after v7, so `@v10` fails with "unable to find version `v10`" before any step runs. Its README pins a release commit SHA with a version comment; we do the same.
+- **Onboarding:** familiar tool. The error was clear, but nothing local catches a bad action reference.
 - **Would we build with it again?** Yes.
 
 ## AWS services used
