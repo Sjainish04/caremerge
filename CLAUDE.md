@@ -7,17 +7,18 @@ Project instructions for Claude Code in this repository.
 Entry for **Build, Ship, Shape: Amazon Developer Hackathon** (Devpost, online).
 
 - **Deadline:** Friday, Oct 23, 2026, 3:00 PM EDT — target submitting on Oct 22.
-- **Phase:** build. The product is **CareMerge**. `CareMerge_Hackathon_Full_Specification.md` (v1.2) is the source of truth for scope, contracts, and the build plan (§17), so read it before changing anything. v1.0 is archived in `docs/archive/`.
+- **Phase:** build. The product is **CareMerge**. `CareMerge_Hackathon_Full_Specification.md` (v2.0, Alexa+) is the source of truth for scope, contracts, and the build plan (§17), so read it before changing anything. v1.0 and v1.2 (Bee) are archived in `docs/archive/`.
 
 ## Decisions
 
-- Idea: CareMerge — version control for care instructions, built on Bee data
-- Primary track: Bee · Mini challenges: AWS Builder (Open Source optional, P2)
-- Stack: Python 3.12 + uv (`packages/caremerge-core`, `apps/bridge`, `apps/agent`, `infra`); TypeScript + pnpm with Vite + React (`apps/web`)
-- AWS: Bedrock (Claude Opus 5.5, US geo inference profile), AgentCore Runtime (Strands, CodeZip), DynamoDB + KMS, CDK
+- Idea: CareMerge — version control for care instructions, as an Alexa+ add-on
+- Primary track: **Alexa+** (a self-hosted MCP add-on, demonstrated through a simulated Alexa+ experience) · Mini challenges: AWS Builder (Open Source optional, P2)
+- Data: **synthetic visit transcripts only** (`fixtures/visits`). No Bee device, Apple Watch, or hardware purchase (decided Oct 4)
+- Stack: Python 3.12 + uv (`packages/caremerge-core`, `apps/addon`, `apps/simulator`, `infra`); TypeScript + pnpm with Vite + React (`apps/web`)
+- AWS: AgentCore Runtime hosting the MCP add-on (Cognito `CUSTOM_JWT`), Bedrock (Claude Opus 5.5 extracts, Claude Sonnet 5.5 plays Alexa), Strands, DynamoDB + KMS, Cognito, CDK
+- Safety: templates speak and the model only routes; state-changing tools are MCP Apps app-only, so the model never sees them
 - Repo: public, MIT (no reviewer invites needed)
-- Team: Jainish Solanki (Track A — engine & cloud) and Siddhartha (Track B — experience & Bee); split and shared interfaces in spec §17.1
-- Bee hardware: none as of Oct 2 (a Bee Pioneer is being ordered), so build **fixtures-first** (spec §17.3): `FakeBeeGateway` and synthetic fixtures until the device arrives
+- Team: Jainish Solanki (Track A — engine & cloud) and Siddhartha (Track B — experience); split and shared interfaces in spec §17.1. Since Oct 9, Claude builds both tracks
 
 ## Rules that constrain every design choice
 
@@ -53,16 +54,16 @@ Spec §15.2–15.3 is binding for both teammates. In short:
 - Logs are structured and content-free: IDs, counts, codes, latencies — never transcript text, quotes, or health details.
 - Checks: Python — ruff, mypy `--strict`, pytest. Web — ESLint, `tsc --noEmit`, Vitest. Write tests first for `caremerge-core` engines.
 - YAGNI: build only what a P0/P1 feature needs. Verify API and SDK details against current docs before relying on them.
-- Collaboration: work on `a/<topic>` or `b/<topic>` branches and merge through PRs. Changes to `caremerge_core/contracts.py` or the local API need the other track's review.
+- Collaboration: work on `a/<topic>` or `b/<topic>` branches and merge through PRs. Changes to `caremerge_core/contracts.py`, the MCP tool contract (spec §7.2), or the simulator API (spec §11) need the other track's review.
 
 ## Layout
 
 Target layout: spec §15.1.
 
 - `packages/caremerge-core` — domain and engines
-- `apps/bridge` — local app and API
-- `apps/agent` — AgentCore extraction service
-- `apps/web` — UI
+- `apps/addon` — the CareMerge MCP add-on (AgentCore Runtime; local on port 8000)
+- `apps/simulator` — the simulated Alexa+ host (orchestrator, confirmations, local API)
+- `apps/web` — the Alexa+ simulator UI
 - `infra/` — CDK
 - `fixtures/` — synthetic data only
 - `ideas.md` — the original idea backlog

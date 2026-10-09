@@ -3,7 +3,7 @@
 Entry for **Build, Ship, Shape: Amazon Developer Hackathon** (Devpost).
 Deadline: **Friday, Oct 23, 2026, 3:00 PM EDT**.
 
-> **Status: building CareMerge** — version control for your care, on the Bee track. The build spec is [CareMerge_Hackathon_Full_Specification.md](CareMerge_Hackathon_Full_Specification.md).
+> **Status: building CareMerge** — version control for your care, as an Alexa+ add-on. The build spec is [CareMerge_Hackathon_Full_Specification.md](CareMerge_Hackathon_Full_Specification.md).
 
 The sections below double as the Devpost text description — replace each _TBD_ as the project takes shape.
 
@@ -11,7 +11,7 @@ The sections below double as the Devpost text description — replace each _TBD_
 
 | | |
 | --- | --- |
-| Primary track | Bee (Wearable AI) |
+| Primary track | Alexa+ (MCP add-on, simulated Alexa+ experience) |
 | Mini challenges | AWS Builder · Open Source (optional) |
 
 ## What it does
