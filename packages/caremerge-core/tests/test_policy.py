@@ -1,4 +1,4 @@
-"""Tests for the deterministic Bee-write policy gate (spec §9.10)."""
+"""Tests for the deterministic reminder policy gate (spec §9.10)."""
 
 from collections.abc import Callable
 from datetime import UTC, datetime
@@ -14,7 +14,7 @@ from caremerge_core.enums import (
     TemplateId,
 )
 from caremerge_core.models import Action, CareCommit, Issue
-from caremerge_core.policy import PolicyCode, PolicyViolationError, check_bee_write
+from caremerge_core.policy import PolicyCode, PolicyViolationError, check_reminder
 from caremerge_core.questions import render
 
 NOW = datetime(2026, 10, 19, 14, 0, tzinfo=UTC)
@@ -60,7 +60,7 @@ def _check(
     state: ReviewState = ReviewState.VERIFIED,
 ) -> None:
     commits = {"cc_hold": commit("cc_hold", state=state)}
-    check_bee_write(action, commits, {"iss_1": issue or _issue()})
+    check_reminder(action, commits, {"iss_1": issue or _issue()})
 
 
 def test_confirmed_template_action_on_an_open_issue_passes(commit: Builder) -> None:
@@ -72,7 +72,8 @@ def test_confirmed_template_action_on_an_open_issue_passes(commit: Builder) -> N
     [
         ({"state": ActionState.PROPOSED}, PolicyCode.NOT_CONFIRMED),
         ({"confirmation_id": None}, PolicyCode.NOT_CONFIRMED),
-        ({"bee_todo_id": "todo_1"}, PolicyCode.ALREADY_EXECUTED),
+        ({"executed_at": NOW}, PolicyCode.ALREADY_EXECUTED),
+        ({"state": ActionState.EXECUTED}, PolicyCode.ALREADY_EXECUTED),
         ({"issue_ids": ()}, PolicyCode.NO_REFERENCES),
         ({"issue_ids": ("iss_404",)}, PolicyCode.UNKNOWN_ISSUE),
         ({"issue_ids": (), "commit_ids": ("cc_404",)}, PolicyCode.UNKNOWN_COMMIT),

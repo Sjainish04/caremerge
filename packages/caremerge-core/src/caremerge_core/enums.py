@@ -109,11 +109,11 @@ class Role(StrEnum):
     SELF = "self"
 
 
-class BeeItemType(StrEnum):
-    """The kind of Bee item a source was imported from."""
+class SourceKind(StrEnum):
+    """Where a source came from: a visit transcript or, with F13, a spoken note."""
 
-    CONVERSATION = "conversation"
-    VOICE_NOTE = "voice_note"
+    VISIT = "visit"
+    NOTE = "note"
 
 
 class ReviewState(StrEnum):
@@ -166,7 +166,7 @@ class LintCode(StrEnum):
 
 
 class ActionState(StrEnum):
-    """Lifecycle of a proposed Bee write."""
+    """Lifecycle of a proposed reminder."""
 
     PROPOSED = "proposed"
     CONFIRMED = "confirmed"

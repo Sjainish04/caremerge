@@ -19,7 +19,6 @@ from caremerge_core.contracts import (
 )
 from caremerge_core.enums import (
     ActionState,
-    BeeItemType,
     CommitKind,
     DateBasis,
     EntityMatch,
@@ -30,6 +29,7 @@ from caremerge_core.enums import (
     ReviewState,
     Role,
     SelfRating,
+    SourceKind,
     SpeakerBasis,
     TemplateId,
 )
@@ -44,11 +44,11 @@ class RecordModel(BaseModel):
 
 
 class SourceEvent(RecordModel):
-    """A user-selected Bee item, minimized to what extraction needs."""
+    """A visit (or spoken note), minimized to what extraction needs."""
 
     source_id: str
-    bee_type: BeeItemType
-    bee_id: str
+    kind: SourceKind
+    external_id: str
     captured_at: AwareDatetime
     role: Role
     label: str
@@ -155,7 +155,7 @@ class Issue(RecordModel):
 
 
 class Action(RecordModel):
-    """A proposed Bee write and, once executed, its receipt."""
+    """A proposed reminder and, once executed, its receipt."""
 
     action_id: str
     template_id: TemplateId
@@ -166,7 +166,6 @@ class Action(RecordModel):
     commit_ids: tuple[str, ...] = ()
     state: ActionState = ActionState.PROPOSED
     confirmation_id: str | None = None
-    bee_todo_id: str | None = None
     created_at: AwareDatetime
     executed_at: AwareDatetime | None = None
     error_code: str | None = None

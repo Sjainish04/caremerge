@@ -31,7 +31,7 @@ class ContractModel(BaseModel):
 
 
 class Utterance(ContractModel):
-    """One transcribed utterance from a Bee item."""
+    """One transcribed utterance from a visit."""
 
     id: str = Field(min_length=1)
     start_ms: int = Field(ge=0)

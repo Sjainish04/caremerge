@@ -16,7 +16,6 @@ from caremerge_core.contracts import (
     Utterance,
 )
 from caremerge_core.enums import (
-    BeeItemType,
     CommitKind,
     EntityMatch,
     MedAction,
@@ -24,6 +23,7 @@ from caremerge_core.enums import (
     ReviewState,
     Role,
     SelfRating,
+    SourceKind,
 )
 from caremerge_core.models import (
     Action,
@@ -110,8 +110,8 @@ def test_only_verified_or_corrected_commits_are_active(
 def test_source_payload_carries_only_minimized_fields() -> None:
     source = SourceEvent(
         source_id="src_1",
-        bee_type=BeeItemType.CONVERSATION,
-        bee_id="6531525",
+        kind=SourceKind.VISIT,
+        external_id="visit-1",
         captured_at=datetime(2026, 10, 5, 14, 10, tzinfo=UTC),
         role=Role.FAMILY_PHYSICIAN,
         label="Dr. Rivera",
@@ -147,8 +147,8 @@ _TIMESTAMPED = [
         SourceEvent,
         {
             **_SOURCE,
-            "bee_type": "conversation",
-            "bee_id": "6531525",
+            "kind": "visit",
+            "external_id": "visit-1",
             "utterances": _UTTERANCES,
             "content_hash": "sha256:abc",
         },

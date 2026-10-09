@@ -1,6 +1,6 @@
-"""Policy gate for Bee writes (spec §9.10).
+"""Policy gate for reminders (spec §9.10).
 
-Nothing reaches Bee unless the user confirmed it, it rests on verified and
+No reminder is stored unless the user confirmed it, it rests on verified and
 sourced commits or open issues, and its text is exactly what an approved
 template renders. The gate is deterministic; it never consults a model.
 """
@@ -18,7 +18,7 @@ TODO_TEMPLATES: Final = frozenset({TemplateId.ASK_CARE_TEAM})
 
 
 class PolicyCode(StrEnum):
-    """Why a Bee write was refused."""
+    """Why a reminder was refused."""
 
     NOT_CONFIRMED = "not_confirmed"
     ALREADY_EXECUTED = "already_executed"
@@ -39,16 +39,16 @@ class PolicyViolationError(CareMergeError):
         super().__init__(", ".join(codes))
 
 
-def check_bee_write(
+def check_reminder(
     action: Action,
     commits: Mapping[str, CareCommit],
     issues: Mapping[str, Issue],
 ) -> None:
-    """Raise ``PolicyViolationError`` unless ``action`` may be written to Bee."""
+    """Raise ``PolicyViolationError`` unless ``action`` may be stored as a reminder."""
     codes: list[PolicyCode] = []
     if action.state is not ActionState.CONFIRMED or not action.confirmation_id:
         codes.append(PolicyCode.NOT_CONFIRMED)
-    if action.bee_todo_id is not None:
+    if action.state is ActionState.EXECUTED or action.executed_at is not None:
         codes.append(PolicyCode.ALREADY_EXECUTED)
     if not action.issue_ids and not action.commit_ids:
         codes.append(PolicyCode.NO_REFERENCES)
