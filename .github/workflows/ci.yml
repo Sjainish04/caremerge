@@ -22,6 +22,6 @@ jobs:
       - name: Lint
         run: uv run ruff check
       - name: Type-check
-        run: uv run mypy packages/caremerge-core/src apps/addon/src
+        run: uv run mypy packages/caremerge-core/src apps/addon/src apps/simulator/src
       - name: Test
         run: uv run pytest
