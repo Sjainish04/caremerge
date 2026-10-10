@@ -26,6 +26,14 @@ FIXTURES = Path(__file__).resolve().parents[3] / "fixtures"
 DEMO_NOW = datetime(2026, 10, 19, 14, 0, tzinfo=UTC)
 
 
+def pytest_addoption(parser: pytest.Parser) -> None:
+    parser.addoption(
+        "--record-web-fixtures",
+        action="store_true",
+        help="record apps/web/src/test/fixtures again from a replay of the demo",
+    )
+
+
 class FixedClock:
     """A clock that returns a set time."""
 
