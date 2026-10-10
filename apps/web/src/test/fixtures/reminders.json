@@ -1,0 +1,17 @@
+{
+  "speech": "",
+  "reminders": [
+    {
+      "action_id": "act_1",
+      "text": "Ask your care team: When should the temporary hold of Medication A for the procedure end?",
+      "alarm_at": "2026-10-20T14:00:00Z",
+      "state": "executed",
+      "based_on": {
+        "clinician": "Dr. Lee",
+        "role": "specialist",
+        "date": "2026-10-07",
+        "quote": "hold Medication A starting Sunday, October 25"
+      }
+    }
+  ]
+}

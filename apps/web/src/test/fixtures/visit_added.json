@@ -1,0 +1,21 @@
+{
+  "speech": "Your visit with Dr. Lee on Wednesday, October 7 is ready to review.",
+  "card": {
+    "tool": "add_visit",
+    "data": {
+      "speech": "Your visit with Dr. Lee on Wednesday, October 7 is ready to review.",
+      "visit": {
+        "visit_id": "visit-2",
+        "title": "Procedure planning",
+        "clinician": "Dr. Lee",
+        "role": "specialist",
+        "date": "2026-10-07",
+        "added": true
+      },
+      "created": 2,
+      "rejected": 0
+    }
+  },
+  "pending": null,
+  "error": false
+}

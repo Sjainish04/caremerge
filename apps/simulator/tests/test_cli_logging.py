@@ -1,6 +1,7 @@
 """Tests for the simulator's entry point and its content-free logs (spec §16.2)."""
 
 import asyncio
+import json
 from typing import Any
 
 import pytest
@@ -47,3 +48,9 @@ def test_turn_logs_never_contain_what_was_said(host: SimulatorHost) -> None:
     rendered = repr(logs).casefold()
     for word in ("medication a", "dr. lee", "sunday", "music", "hold"):
         assert word not in rendered
+
+
+def test_openapi_prints_the_api_document(capsys: pytest.CaptureFixture[str]) -> None:
+    assert cli.main(["openapi"]) == 0
+    document = json.loads(capsys.readouterr().out)
+    assert {"/api/turn", "/api/inbox", "/api/reminders"} <= set(document["paths"])

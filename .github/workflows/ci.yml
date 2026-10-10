@@ -25,3 +25,35 @@ jobs:
         run: uv run mypy packages/caremerge-core/src apps/addon/src apps/simulator/src
       - name: Test
         run: uv run pytest
+      - name: Check the web app's copy of the simulator API document
+        run: uv run caremerge-sim openapi | diff -u apps/web/src/api/openapi.json -
+
+  web:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/web
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+        with:
+          version: 11
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: pnpm
+          cache-dependency-path: apps/web/pnpm-lock.yaml
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - name: Lint
+        run: pnpm lint
+      - name: Type-check
+        run: pnpm typecheck
+      - name: Test
+        run: pnpm test
+      - name: Check the generated API types
+        run: |
+          pnpm gen:api
+          git diff --exit-code -- src/api/schema.d.ts
+      - name: Build
+        run: pnpm build

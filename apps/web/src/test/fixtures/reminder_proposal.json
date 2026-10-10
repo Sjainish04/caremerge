@@ -1,0 +1,32 @@
+{
+  "speech": "I can remind you tomorrow at 10 AM: Ask your care team: When should the temporary hold of Medication A for the procedure end? Should I add it?",
+  "card": {
+    "tool": "propose_reminder",
+    "data": {
+      "speech": "I can remind you tomorrow at 10 AM: Ask your care team: When should the temporary hold of Medication A for the procedure end? Should I add it?",
+      "reminder": {
+        "action_id": "act_1",
+        "text": "Ask your care team: When should the temporary hold of Medication A for the procedure end?",
+        "alarm_at": "2026-10-20T14:00:00Z",
+        "state": "proposed",
+        "based_on": {
+          "clinician": "Dr. Lee",
+          "role": "specialist",
+          "date": "2026-10-07",
+          "quote": "hold Medication A starting Sunday, October 25"
+        }
+      },
+      "confirmation": {
+        "tool": "confirm_reminder",
+        "arguments": {
+          "action_id": "act_1"
+        }
+      }
+    }
+  },
+  "pending": {
+    "pending_id": "pend_3",
+    "tool": "confirm_reminder"
+  },
+  "error": false
+}

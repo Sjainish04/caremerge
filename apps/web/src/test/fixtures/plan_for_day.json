@@ -1,0 +1,59 @@
+{
+  "speech": "On Sunday, October 25, Medication A is on hold in your care plan. That's from Dr. Lee on Wednesday, October 7. CareMerge isn't deciding what's correct. Check with your care team if you're unsure.",
+  "card": {
+    "tool": "plan_for_day",
+    "data": {
+      "speech": "On Sunday, October 25, Medication A is on hold in your care plan. That's from Dr. Lee on Wednesday, October 7. CareMerge isn't deciding what's correct. Check with your care team if you're unsure.",
+      "day": "2026-10-25",
+      "entries": [
+        {
+          "subject": "Medication A",
+          "dimension": "action",
+          "values": [
+            "on hold"
+          ],
+          "temporary": true,
+          "end_captured": false,
+          "source": {
+            "clinician": "Dr. Lee",
+            "role": "specialist",
+            "date": "2026-10-07",
+            "quote": "hold Medication A starting Sunday, October 25"
+          }
+        },
+        {
+          "subject": "Medication A",
+          "dimension": "dose",
+          "values": [
+            "one tablet"
+          ],
+          "temporary": false,
+          "end_captured": true,
+          "source": {
+            "clinician": "Dr. Rivera",
+            "role": "family_physician",
+            "date": "2026-10-05",
+            "quote": "keep taking Medication A, one tablet every morning"
+          }
+        },
+        {
+          "subject": "Medication A",
+          "dimension": "time_of_day",
+          "values": [
+            "every morning"
+          ],
+          "temporary": false,
+          "end_captured": true,
+          "source": {
+            "clinician": "Dr. Rivera",
+            "role": "family_physician",
+            "date": "2026-10-05",
+            "quote": "keep taking Medication A, one tablet every morning"
+          }
+        }
+      ]
+    }
+  },
+  "pending": null,
+  "error": false
+}
