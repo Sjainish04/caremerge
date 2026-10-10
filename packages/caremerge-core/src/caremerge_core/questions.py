@@ -23,6 +23,7 @@ TEMPLATES: Final[Mapping[TemplateId, str]] = MappingProxyType(
             "When should the temporary {action_noun} of {entity} end?"
         ),
         TemplateId.ASK_CARE_TEAM: "Ask your care team: {question}",
+        TemplateId.REMIND_VERIFIED_INSTRUCTION: 'Reminder from {source} ({date}): "{quote}"',
     }
 )
 

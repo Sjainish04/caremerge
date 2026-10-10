@@ -2,7 +2,9 @@
 
 No reminder is stored unless the user confirmed it, it rests on verified and
 sourced commits or open issues, and its text is exactly what an approved
-template renders. The gate is deterministic; it never consults a model.
+template renders. A reminder may only restate one verified commit's own
+quote and source, so it is never a new instruction. The gate is
+deterministic; it never consults a model.
 """
 
 from collections.abc import Mapping
@@ -14,7 +16,9 @@ from caremerge_core.errors import CareMergeError
 from caremerge_core.models import Action, CareCommit, Issue
 from caremerge_core.questions import TemplateError, render
 
-TODO_TEMPLATES: Final = frozenset({TemplateId.ASK_CARE_TEAM})
+TODO_TEMPLATES: Final = frozenset(
+    {TemplateId.ASK_CARE_TEAM, TemplateId.REMIND_VERIFIED_INSTRUCTION}
+)
 
 
 class PolicyCode(StrEnum):
@@ -29,6 +33,7 @@ class PolicyCode(StrEnum):
     UNVERIFIED_COMMIT = "unverified_commit"
     TEMPLATE_NOT_ALLOWED = "template_not_allowed"
     TEXT_NOT_FROM_TEMPLATE = "text_not_from_template"
+    NOT_A_RESTATEMENT = "not_a_restatement"
 
 
 class PolicyViolationError(CareMergeError):
@@ -68,6 +73,8 @@ def check_reminder(
         elif not commit.is_active:
             codes.append(PolicyCode.UNVERIFIED_COMMIT)
     codes.extend(_template_codes(action))
+    if action.template_id is TemplateId.REMIND_VERIFIED_INSTRUCTION:
+        codes.extend(_restatement_codes(action, commits))
     if codes:
         raise PolicyViolationError(tuple(dict.fromkeys(codes)))
 
@@ -80,3 +87,16 @@ def _template_codes(action: Action) -> list[PolicyCode]:
     except TemplateError:
         return [PolicyCode.TEXT_NOT_FROM_TEMPLATE]
     return [] if expected == action.text else [PolicyCode.TEXT_NOT_FROM_TEMPLATE]
+
+
+def _restatement_codes(action: Action, commits: Mapping[str, CareCommit]) -> list[PolicyCode]:
+    """A reminder must quote exactly one commit's own evidence and source label."""
+    if action.issue_ids or len(action.commit_ids) != 1:
+        return [PolicyCode.NOT_A_RESTATEMENT]
+    commit = commits.get(action.commit_ids[0])
+    if commit is None:
+        return []
+    quotes = {evidence.quote for evidence in commit.source.evidence}
+    if action.params.get("quote") in quotes and action.params.get("source") == commit.source.label:
+        return []
+    return [PolicyCode.NOT_A_RESTATEMENT]

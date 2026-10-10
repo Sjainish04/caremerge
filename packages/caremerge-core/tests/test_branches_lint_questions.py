@@ -25,7 +25,7 @@ from caremerge_core.enums import (
 )
 from caremerge_core.lint import lint
 from caremerge_core.models import CareCommit
-from caremerge_core.questions import TemplateError, action_noun, render
+from caremerge_core.questions import TEMPLATES, TemplateError, action_noun, render
 
 Builder = Callable[..., CareCommit]
 
@@ -155,3 +155,17 @@ def test_l002_ignores_changes_that_are_bounded_unverified_or_persistent(
 def test_render_inserts_values_literally() -> None:
     text = render(TemplateId.ASK_CARE_TEAM, {"question": "Is {entity} still on hold?"})
     assert text == "Ask your care team: Is {entity} still on hold?"
+
+
+def test_templates_are_registered_verbatim() -> None:
+    assert dict(TEMPLATES) == {
+        TemplateId.L002_MESSAGE: "This temporary change has no captured end.",
+        TemplateId.L002_QUESTION: (
+            "When should the temporary {action_noun} of {entity} for the {context} end?"
+        ),
+        TemplateId.L002_QUESTION_NO_CONTEXT: (
+            "When should the temporary {action_noun} of {entity} end?"
+        ),
+        TemplateId.ASK_CARE_TEAM: "Ask your care team: {question}",
+        TemplateId.REMIND_VERIFIED_INSTRUCTION: 'Reminder from {source} ({date}): "{quote}"',
+    }

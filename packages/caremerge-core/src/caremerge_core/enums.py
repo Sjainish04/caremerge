@@ -181,3 +181,4 @@ class TemplateId(StrEnum):
     L002_QUESTION = "l002_question"
     L002_QUESTION_NO_CONTEXT = "l002_question_no_context"
     ASK_CARE_TEAM = "ask_care_team"
+    REMIND_VERIFIED_INSTRUCTION = "remind_verified_instruction"

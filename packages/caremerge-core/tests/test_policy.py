@@ -101,3 +101,50 @@ def test_commits_behind_the_issue_must_be_verified(commit: Builder) -> None:
     with pytest.raises(PolicyViolationError) as caught:
         _check(_action(), commit, state=ReviewState.CANDIDATE)
     assert caught.value.codes == (PolicyCode.UNVERIFIED_COMMIT,)
+
+
+REMINDER = {"source": "Dr. Rivera", "date": "2026-10-05", "quote": "keep taking Medication A"}
+
+
+def _reminder(params: dict[str, str], **overrides: object) -> Action:
+    action = Action(
+        action_id="act_2",
+        template_id=TemplateId.REMIND_VERIFIED_INSTRUCTION,
+        params=params,
+        text=render(TemplateId.REMIND_VERIFIED_INSTRUCTION, params),
+        alarm_at=NOW,
+        commit_ids=("cc_hold",),
+        state=ActionState.CONFIRMED,
+        confirmation_id="conf_1",
+        created_at=NOW,
+    )
+    return action.model_copy(update=overrides)
+
+
+def test_reminder_restating_a_verified_commit_passes(commit: Builder) -> None:
+    reminder = _reminder(REMINDER)
+    _check(reminder, commit)
+    assert reminder.text == 'Reminder from Dr. Rivera (2026-10-05): "keep taking Medication A"'
+
+
+@pytest.mark.parametrize(
+    ("params", "overrides"),
+    [
+        ({**REMINDER, "quote": "double the dose"}, {}),
+        ({**REMINDER, "source": "Dr. Lee"}, {}),
+        (REMINDER, {"commit_ids": ("cc_hold", "cc_other")}),
+        (REMINDER, {"issue_ids": ("iss_1",)}),
+    ],
+)
+def test_reminder_must_restate_one_commits_quote_and_source(
+    commit: Builder, params: dict[str, str], overrides: dict[str, object]
+) -> None:
+    with pytest.raises(PolicyViolationError) as caught:
+        _check(_reminder(params, **overrides), commit)
+    assert PolicyCode.NOT_A_RESTATEMENT in caught.value.codes
+
+
+def test_reminder_from_an_unverified_commit_is_refused(commit: Builder) -> None:
+    with pytest.raises(PolicyViolationError) as caught:
+        _check(_reminder(REMINDER), commit, state=ReviewState.CANDIDATE)
+    assert caught.value.codes == (PolicyCode.UNVERIFIED_COMMIT,)
