@@ -68,6 +68,38 @@ Fill a section in as soon as a tool enters the project; polish wording at submis
 - **Onboarding:** familiar tool. The error was clear, but nothing local catches a bad action reference.
 - **Would we build with it again?** Yes.
 
+### MCP Python SDK (`mcp` 2.3)
+
+- **What we used it for:** the CareMerge add-on's MCP server (Streamable HTTP, stateless), app-only tool visibility through `_meta.ui.visibility`, and the simulator's MCP client.
+- **What worked well:** `Annotated[CallToolResult, Model]` returns spoken text and typed card data while still advertising and validating the output schema; `mcp.Client(server)` runs contract tests in process.
+- **What needs work:** 2.x renamed FastMCP to `MCPServer`, while AWS's AgentCore guide still shows the 1.x import (see the friction log, FL-001). The SDK's error message explains the rename, which helped.
+- **Onboarding:** reading the installed SDK's source answered every question; the migration guide link in the error is useful.
+- **Would we build with it again?** Yes.
+
+### FastAPI (0.143), uvicorn (0.54), structlog (26.1), pydantic-settings (2.15)
+
+- **What we used it for:** the simulator host's local API, serving both apps, content-free JSON logs, and typed settings from `CAREMERGE_` variables.
+- **What worked well:** a discriminated union of card models becomes a typed union in the OpenAPI document, which `openapi-typescript` turns into TypeScript types; `structlog.testing.capture_logs` makes the no-content-in-logs invariant a plain test.
+- **What needs work:** Starlette's `TestClient` now wants `httpx2`; with `httpx` it warns.
+- **Onboarding:** familiar tools.
+- **Would we build with it again?** Yes.
+
+### Vite (8.3), React (19.2), Tailwind CSS (4.3), openapi-typescript (7.13) + openapi-fetch (0.17), Vitest (5.0)
+
+- **What we used it for:** the Alexa+ simulator UI, its API types generated from the simulator's OpenAPI document, and its tests.
+- **What worked well:** `create-vite --no-interactive --eslint` scaffolds without prompts; generated types turn every contract change into a type error.
+- **What needs work:** React templates now default to Oxlint, so ESLint needs the `--eslint` flag.
+- **Onboarding:** familiar tools.
+- **Would we build with it again?** Yes.
+
+### Web Speech API (Chrome)
+
+- **What we used it for:** push-to-talk speech recognition and spoken replies in the simulator.
+- **What worked well:** no dependency and no cloud call for a local demo.
+- **What needs work:** recognition is Chrome-only, so the simulator keeps a text box and suggested requests as a fallback.
+- **Onboarding:** short. TypeScript 6.0's DOM types have the recognition event and result types but not the `SpeechRecognition` constructor, so we declare a minimal interface.
+- **Would we build with it again?** Yes, with Amazon Polly for the voice (P1).
+
 ## AWS services used
 
 <!-- Service → what it does in our architecture → link to the file that calls it. -->
