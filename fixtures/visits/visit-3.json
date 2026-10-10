@@ -1,0 +1,11 @@
+{
+  "visit_id": "visit-3",
+  "title": "Pharmacy pickup",
+  "clinician": "Pharmacist",
+  "role": "pharmacist",
+  "started_at": "2026-10-10T16:05:00Z",
+  "utterances": [
+    {"id": "v3-u1", "start_ms": 0, "text": "Take Medication A with food."},
+    {"id": "v3-u2", "start_ms": 2600, "text": "It's best taken in the evening."}
+  ]
+}

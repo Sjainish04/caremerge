@@ -1,0 +1,24 @@
+{
+  "candidates": [
+    {
+      "kind": "medication_instruction",
+      "subject_text": "Medication A",
+      "entity": {"match": "new"},
+      "attributes": {"food_relation": "with_food"},
+      "effective": {"date_basis": "none"},
+      "modality": "instruction",
+      "evidence": [{"utterance_id": "v3-u1", "quote": "Take Medication A with food"}],
+      "self_rating": "high"
+    },
+    {
+      "kind": "medication_instruction",
+      "subject_text": "Medication A",
+      "entity": {"match": "new"},
+      "attributes": {"time_of_day": "evening"},
+      "effective": {"date_basis": "none"},
+      "modality": "instruction",
+      "evidence": [{"utterance_id": "v3-u2", "quote": "It's best taken in the evening"}],
+      "self_rating": "high"
+    }
+  ]
+}

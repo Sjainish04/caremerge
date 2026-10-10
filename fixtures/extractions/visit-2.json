@@ -1,0 +1,26 @@
+{
+  "candidates": [
+    {
+      "kind": "procedure",
+      "subject_text": "procedure",
+      "entity": {"match": "new"},
+      "attributes": {"scheduled_for": "2026-10-28"},
+      "effective": {"date_basis": "explicit", "date_raw": "Wednesday, October 28"},
+      "modality": "information",
+      "evidence": [{"utterance_id": "v2-u1", "quote": "Your procedure is on Wednesday, October 28"}],
+      "self_rating": "high"
+    },
+    {
+      "kind": "medication_instruction",
+      "subject_text": "Medication A",
+      "entity": {"match": "new"},
+      "attributes": {"action": "hold"},
+      "effective": {"start": "2026-10-25", "date_basis": "explicit", "date_raw": "starting Sunday, October 25"},
+      "temporary": true,
+      "context": "procedure",
+      "modality": "instruction",
+      "evidence": [{"utterance_id": "v2-u2", "quote": "hold Medication A starting Sunday, October 25"}],
+      "self_rating": "high"
+    }
+  ]
+}

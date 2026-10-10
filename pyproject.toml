@@ -3,16 +3,19 @@ name = "caremerge-workspace"
 version = "0.1.0"
 requires-python = ">=3.12"
 dependencies = [
+    "caremerge-addon",
     "caremerge-core",
 ]
 
 [tool.uv.workspace]
 members = [
     "packages/caremerge-core",
+    "apps/addon",
 ]
 
 [tool.uv.sources]
 caremerge-core = { workspace = true }
+caremerge-addon = { workspace = true }
 
 [dependency-groups]
 dev = [
@@ -31,7 +34,7 @@ select = ["E", "F", "W", "I", "B", "UP", "D", "N", "S", "SIM", "RUF"]
 ignore = ["D105", "D107"]
 
 [tool.ruff.lint.isort]
-known-first-party = ["caremerge_core"]
+known-first-party = ["caremerge_core", "caremerge_addon"]
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"
@@ -45,5 +48,5 @@ strict = true
 plugins = ["pydantic.mypy"]
 
 [tool.pytest.ini_options]
-testpaths = ["packages/caremerge-core/tests"]
+testpaths = ["packages/caremerge-core/tests", "apps/addon/tests"]
 addopts = ["-q", "--import-mode=importlib"]
