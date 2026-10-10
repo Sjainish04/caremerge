@@ -16,8 +16,9 @@ from caremerge_addon.extraction.stub import StubExtractionClient
 from caremerge_addon.pipeline.compiler import compile_source
 from caremerge_addon.pipeline.context import PipelineContext
 from caremerge_addon.pipeline.intake import add_visit
+from caremerge_addon.services import AddonServices
 from caremerge_addon.settings import AddonSettings
-from caremerge_addon.store.memory import InMemoryRepository
+from caremerge_addon.store.memory import InMemoryRepository, MemoryLedger
 from caremerge_addon.visits.fixture_inbox import FixtureVisitInbox
 
 FIXTURES = Path(__file__).resolve().parents[3] / "fixtures"
@@ -86,3 +87,15 @@ def add_visit_n(ctx: PipelineContext) -> VisitAdder:
         return list(compile_source(added.source, ctx).created)
 
     return run
+
+
+@pytest.fixture
+def services(settings: AddonSettings, inbox: FixtureVisitInbox, clock: FixedClock) -> AddonServices:
+    return AddonServices(
+        settings=settings,
+        ledger=MemoryLedger(),
+        inbox=inbox,
+        extraction=StubExtractionClient.from_dir(FIXTURES / "extractions"),
+        clock=clock,
+        ids=CounterIds(),
+    )
