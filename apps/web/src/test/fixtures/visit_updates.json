@@ -1,0 +1,67 @@
+{
+  "speech": "Your visit with Dr. Lee on Wednesday, October 7 has 2 new items: your procedure on Wednesday, October 28 and a hold on Medication A starting Sunday, October 25. Should I add them to your care plan?",
+  "card": {
+    "tool": "visit_updates",
+    "data": {
+      "speech": "Your visit with Dr. Lee on Wednesday, October 7 has 2 new items: your procedure on Wednesday, October 28 and a hold on Medication A starting Sunday, October 25. Should I add them to your care plan?",
+      "clinician": "Dr. Lee",
+      "visit_date": "2026-10-07",
+      "items": [
+        {
+          "commit_id": "cc_4",
+          "kind": "procedure",
+          "subject": "procedure",
+          "summary": "your procedure on Wednesday, October 28",
+          "temporary": false,
+          "source": {
+            "clinician": "Dr. Lee",
+            "role": "specialist",
+            "date": "2026-10-07",
+            "quote": "Your procedure is on Wednesday, October 28"
+          },
+          "signals": {
+            "evidence": "verified",
+            "date": "explicit",
+            "entity": "new",
+            "speaker": "session_label",
+            "model": "high"
+          }
+        },
+        {
+          "commit_id": "cc_5",
+          "kind": "medication_instruction",
+          "subject": "Medication A",
+          "summary": "a hold on Medication A starting Sunday, October 25",
+          "temporary": true,
+          "source": {
+            "clinician": "Dr. Lee",
+            "role": "specialist",
+            "date": "2026-10-07",
+            "quote": "hold Medication A starting Sunday, October 25"
+          },
+          "signals": {
+            "evidence": "verified",
+            "date": "explicit",
+            "entity": "matched",
+            "speaker": "session_label",
+            "model": "high"
+          }
+        }
+      ],
+      "confirmation": {
+        "tool": "confirm_items",
+        "arguments": {
+          "commit_ids": [
+            "cc_4",
+            "cc_5"
+          ]
+        }
+      }
+    }
+  },
+  "pending": {
+    "pending_id": "pend_2",
+    "tool": "confirm_items"
+  },
+  "error": false
+}

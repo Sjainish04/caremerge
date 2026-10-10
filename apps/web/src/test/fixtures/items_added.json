@@ -1,0 +1,15 @@
+{
+  "speech": "Added to your care plan.",
+  "card": {
+    "tool": "confirm_items",
+    "data": {
+      "speech": "Added to your care plan.",
+      "commit_ids": [
+        "cc_4",
+        "cc_5"
+      ]
+    }
+  },
+  "pending": null,
+  "error": false
+}

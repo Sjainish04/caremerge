@@ -1,0 +1,24 @@
+{
+  "speech": "1 question needs clarifying: When should the temporary hold of Medication A for the procedure end? I can remind you to ask your care team.",
+  "card": {
+    "tool": "open_questions",
+    "data": {
+      "speech": "1 question needs clarifying: When should the temporary hold of Medication A for the procedure end? I can remind you to ask your care team.",
+      "questions": [
+        {
+          "issue_id": "iss_1",
+          "question": "When should the temporary hold of Medication A for the procedure end?",
+          "subject": "Medication A",
+          "source": {
+            "clinician": "Dr. Lee",
+            "role": "specialist",
+            "date": "2026-10-07",
+            "quote": "hold Medication A starting Sunday, October 25"
+          }
+        }
+      ]
+    }
+  },
+  "pending": null,
+  "error": false
+}

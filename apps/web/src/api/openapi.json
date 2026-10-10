@@ -1,0 +1,1416 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "CareMerge Alexa+ simulator API",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/api/session": {
+      "get": {
+        "summary": "Session",
+        "operationId": "session_api_session_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionView"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/health": {
+      "get": {
+        "summary": "Health",
+        "operationId": "health_api_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/turn": {
+      "post": {
+        "summary": "Turn",
+        "operationId": "turn_api_turn_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TurnRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TurnResult"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/confirmations/{pending_id}": {
+      "post": {
+        "summary": "Confirm",
+        "operationId": "confirm_api_confirmations__pending_id__post",
+        "parameters": [
+          {
+            "name": "pending_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Pending Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConfirmRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TurnResult"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/inbox": {
+      "get": {
+        "summary": "Inbox",
+        "operationId": "inbox_api_inbox_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VisitListResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/inbox/{visit_id}": {
+      "post": {
+        "summary": "Add Visit",
+        "operationId": "add_visit_api_inbox__visit_id__post",
+        "parameters": [
+          {
+            "name": "visit_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Visit Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TurnResult"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/reminders": {
+      "get": {
+        "summary": "Reminders",
+        "operationId": "reminders_api_reminders_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReminderListResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/data": {
+      "delete": {
+        "summary": "Delete Data",
+        "operationId": "delete_data_api_data_delete",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TurnResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ActionState": {
+        "type": "string",
+        "enum": [
+          "proposed",
+          "confirmed",
+          "executed",
+          "failed"
+        ],
+        "title": "ActionState",
+        "description": "Lifecycle of a proposed reminder."
+      },
+      "ChangeCard": {
+        "properties": {
+          "subject": {
+            "type": "string",
+            "title": "Subject"
+          },
+          "dimension": {
+            "$ref": "#/components/schemas/Dimension"
+          },
+          "change": {
+            "$ref": "#/components/schemas/ChangeType"
+          },
+          "before": {
+            "items": {
+              "$ref": "#/components/schemas/SegmentCard"
+            },
+            "type": "array",
+            "title": "Before"
+          },
+          "after": {
+            "items": {
+              "$ref": "#/components/schemas/SegmentCard"
+            },
+            "type": "array",
+            "title": "After"
+          },
+          "future_effective": {
+            "type": "boolean",
+            "title": "Future Effective"
+          },
+          "temporary": {
+            "type": "boolean",
+            "title": "Temporary"
+          },
+          "end_not_captured": {
+            "type": "boolean",
+            "title": "End Not Captured"
+          },
+          "sources": {
+            "items": {
+              "$ref": "#/components/schemas/SourceInfo"
+            },
+            "type": "array",
+            "title": "Sources"
+          }
+        },
+        "type": "object",
+        "required": [
+          "subject",
+          "dimension",
+          "change",
+          "before",
+          "after",
+          "future_effective",
+          "temporary",
+          "end_not_captured",
+          "sources"
+        ],
+        "title": "ChangeCard",
+        "description": "How one subject's dimension changed, with before and after runs."
+      },
+      "ChangeType": {
+        "type": "string",
+        "enum": [
+          "added",
+          "removed",
+          "changed"
+        ],
+        "title": "ChangeType",
+        "description": "How a dimension's schedule changed between two knowledge points."
+      },
+      "CommitKind": {
+        "type": "string",
+        "enum": [
+          "medication_instruction",
+          "monitoring_instruction",
+          "appointment",
+          "procedure",
+          "test",
+          "follow_up",
+          "observation"
+        ],
+        "title": "CommitKind",
+        "description": "What a CareCommit describes."
+      },
+      "ConfirmRequest": {
+        "properties": {
+          "answer": {
+            "type": "string",
+            "enum": [
+              "yes",
+              "no"
+            ],
+            "title": "Answer"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "answer"
+        ],
+        "title": "ConfirmRequest",
+        "description": "A tap on a confirmation card."
+      },
+      "DataDeletedCard": {
+        "properties": {
+          "tool": {
+            "type": "string",
+            "const": "delete_my_data",
+            "title": "Tool"
+          },
+          "data": {
+            "$ref": "#/components/schemas/DataDeletedResult"
+          }
+        },
+        "type": "object",
+        "required": [
+          "tool",
+          "data"
+        ],
+        "title": "DataDeletedCard",
+        "description": "The user's data was deleted."
+      },
+      "DataDeletedResult": {
+        "properties": {
+          "speech": {
+            "type": "string",
+            "title": "Speech"
+          }
+        },
+        "type": "object",
+        "required": [
+          "speech"
+        ],
+        "title": "DataDeletedResult",
+        "description": "The user's partition was emptied."
+      },
+      "DateBasis": {
+        "type": "string",
+        "enum": [
+          "explicit",
+          "relative",
+          "none"
+        ],
+        "title": "DateBasis",
+        "description": "How a date was established from the source text."
+      },
+      "Dimension": {
+        "type": "string",
+        "enum": [
+          "action",
+          "dose",
+          "time_of_day",
+          "food_relation",
+          "days_of_week",
+          "scheduled_for",
+          "interval"
+        ],
+        "title": "Dimension",
+        "description": "A comparable aspect of a care item: the unit of plans and diffs."
+      },
+      "EntityMatch": {
+        "type": "string",
+        "enum": [
+          "matched",
+          "possible_match",
+          "new",
+          "ambiguous"
+        ],
+        "title": "EntityMatch",
+        "description": "How confidently an extracted subject maps to a known entity."
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "HealthResponse": {
+        "properties": {
+          "addon_reachable": {
+            "type": "boolean",
+            "title": "Addon Reachable"
+          },
+          "model_tools": {
+            "type": "integer",
+            "title": "Model Tools"
+          },
+          "orchestrator": {
+            "type": "string",
+            "title": "Orchestrator"
+          }
+        },
+        "type": "object",
+        "required": [
+          "addon_reachable",
+          "model_tools",
+          "orchestrator"
+        ],
+        "title": "HealthResponse",
+        "description": "Connection status for the simulator header."
+      },
+      "ItemCard": {
+        "properties": {
+          "commit_id": {
+            "type": "string",
+            "title": "Commit Id"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/CommitKind"
+          },
+          "subject": {
+            "type": "string",
+            "title": "Subject"
+          },
+          "summary": {
+            "type": "string",
+            "title": "Summary"
+          },
+          "temporary": {
+            "type": "boolean",
+            "title": "Temporary"
+          },
+          "source": {
+            "$ref": "#/components/schemas/SourceInfo"
+          },
+          "signals": {
+            "$ref": "#/components/schemas/Signals"
+          }
+        },
+        "type": "object",
+        "required": [
+          "commit_id",
+          "kind",
+          "subject",
+          "summary",
+          "temporary",
+          "source",
+          "signals"
+        ],
+        "title": "ItemCard",
+        "description": "One captured item awaiting the user's confirmation."
+      },
+      "ItemsAddedCard": {
+        "properties": {
+          "tool": {
+            "type": "string",
+            "const": "confirm_items",
+            "title": "Tool"
+          },
+          "data": {
+            "$ref": "#/components/schemas/ItemsAddedResult"
+          }
+        },
+        "type": "object",
+        "required": [
+          "tool",
+          "data"
+        ],
+        "title": "ItemsAddedCard",
+        "description": "Items just added to the care plan."
+      },
+      "ItemsAddedResult": {
+        "properties": {
+          "speech": {
+            "type": "string",
+            "title": "Speech"
+          },
+          "commit_ids": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Commit Ids"
+          }
+        },
+        "type": "object",
+        "required": [
+          "speech",
+          "commit_ids"
+        ],
+        "title": "ItemsAddedResult",
+        "description": "The items this confirmation verified."
+      },
+      "OpenQuestionsCard": {
+        "properties": {
+          "tool": {
+            "type": "string",
+            "const": "open_questions",
+            "title": "Tool"
+          },
+          "data": {
+            "$ref": "#/components/schemas/OpenQuestionsResult"
+          }
+        },
+        "type": "object",
+        "required": [
+          "tool",
+          "data"
+        ],
+        "title": "OpenQuestionsCard",
+        "description": "Open clarification questions."
+      },
+      "OpenQuestionsResult": {
+        "properties": {
+          "speech": {
+            "type": "string",
+            "title": "Speech"
+          },
+          "questions": {
+            "items": {
+              "$ref": "#/components/schemas/QuestionCard"
+            },
+            "type": "array",
+            "title": "Questions"
+          }
+        },
+        "type": "object",
+        "required": [
+          "speech",
+          "questions"
+        ],
+        "title": "OpenQuestionsResult",
+        "description": "Every open clarification question."
+      },
+      "PendingConfirmation": {
+        "properties": {
+          "tool": {
+            "type": "string",
+            "enum": [
+              "confirm_items",
+              "confirm_reminder"
+            ],
+            "title": "Tool"
+          },
+          "arguments": {
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                }
+              ]
+            },
+            "type": "object",
+            "title": "Arguments"
+          }
+        },
+        "type": "object",
+        "required": [
+          "tool",
+          "arguments"
+        ],
+        "title": "PendingConfirmation",
+        "description": "The app-only tool a host calls, with these arguments, after the user says yes."
+      },
+      "PendingView": {
+        "properties": {
+          "pending_id": {
+            "type": "string",
+            "title": "Pending Id"
+          },
+          "tool": {
+            "type": "string",
+            "enum": [
+              "confirm_items",
+              "confirm_reminder"
+            ],
+            "title": "Tool"
+          }
+        },
+        "type": "object",
+        "required": [
+          "pending_id",
+          "tool"
+        ],
+        "title": "PendingView",
+        "description": "What the UI needs to offer a confirmation button."
+      },
+      "PlanDayCard": {
+        "properties": {
+          "tool": {
+            "type": "string",
+            "const": "plan_for_day",
+            "title": "Tool"
+          },
+          "data": {
+            "$ref": "#/components/schemas/PlanDayResult"
+          }
+        },
+        "type": "object",
+        "required": [
+          "tool",
+          "data"
+        ],
+        "title": "PlanDayCard",
+        "description": "The plan on one day."
+      },
+      "PlanDayResult": {
+        "properties": {
+          "speech": {
+            "type": "string",
+            "title": "Speech"
+          },
+          "day": {
+            "type": "string",
+            "format": "date",
+            "title": "Day"
+          },
+          "entries": {
+            "items": {
+              "$ref": "#/components/schemas/PlanEntryCard"
+            },
+            "type": "array",
+            "title": "Entries"
+          }
+        },
+        "type": "object",
+        "required": [
+          "speech",
+          "day",
+          "entries"
+        ],
+        "title": "PlanDayResult",
+        "description": "The plan on one day."
+      },
+      "PlanEntryCard": {
+        "properties": {
+          "subject": {
+            "type": "string",
+            "title": "Subject"
+          },
+          "dimension": {
+            "$ref": "#/components/schemas/Dimension"
+          },
+          "values": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Values"
+          },
+          "temporary": {
+            "type": "boolean",
+            "title": "Temporary"
+          },
+          "end_captured": {
+            "type": "boolean",
+            "title": "End Captured"
+          },
+          "source": {
+            "$ref": "#/components/schemas/SourceInfo"
+          }
+        },
+        "type": "object",
+        "required": [
+          "subject",
+          "dimension",
+          "values",
+          "temporary",
+          "end_captured",
+          "source"
+        ],
+        "title": "PlanEntryCard",
+        "description": "What the plan says about one subject's dimension on a day."
+      },
+      "QuestionCard": {
+        "properties": {
+          "issue_id": {
+            "type": "string",
+            "title": "Issue Id"
+          },
+          "question": {
+            "type": "string",
+            "title": "Question"
+          },
+          "subject": {
+            "type": "string",
+            "title": "Subject"
+          },
+          "source": {
+            "$ref": "#/components/schemas/SourceInfo"
+          }
+        },
+        "type": "object",
+        "required": [
+          "issue_id",
+          "question",
+          "subject",
+          "source"
+        ],
+        "title": "QuestionCard",
+        "description": "An open clarification question and where its gap came from."
+      },
+      "ReminderCard": {
+        "properties": {
+          "action_id": {
+            "type": "string",
+            "title": "Action Id"
+          },
+          "text": {
+            "type": "string",
+            "title": "Text"
+          },
+          "alarm_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Alarm At"
+          },
+          "state": {
+            "$ref": "#/components/schemas/ActionState"
+          },
+          "based_on": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SourceInfo"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "action_id",
+          "text",
+          "alarm_at",
+          "state",
+          "based_on"
+        ],
+        "title": "ReminderCard",
+        "description": "A proposed or stored reminder."
+      },
+      "ReminderListResult": {
+        "properties": {
+          "speech": {
+            "type": "string",
+            "title": "Speech"
+          },
+          "reminders": {
+            "items": {
+              "$ref": "#/components/schemas/ReminderCard"
+            },
+            "type": "array",
+            "title": "Reminders"
+          }
+        },
+        "type": "object",
+        "required": [
+          "speech",
+          "reminders"
+        ],
+        "title": "ReminderListResult",
+        "description": "Every stored reminder, soonest first."
+      },
+      "ReminderProposalCard": {
+        "properties": {
+          "tool": {
+            "type": "string",
+            "const": "propose_reminder",
+            "title": "Tool"
+          },
+          "data": {
+            "$ref": "#/components/schemas/ReminderProposalResult"
+          }
+        },
+        "type": "object",
+        "required": [
+          "tool",
+          "data"
+        ],
+        "title": "ReminderProposalCard",
+        "description": "A reminder awaiting confirmation."
+      },
+      "ReminderProposalResult": {
+        "properties": {
+          "speech": {
+            "type": "string",
+            "title": "Speech"
+          },
+          "reminder": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ReminderCard"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "confirmation": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PendingConfirmation"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "speech",
+          "reminder",
+          "confirmation"
+        ],
+        "title": "ReminderProposalResult",
+        "description": "A proposed reminder and the confirmation that stores it, if there was a topic."
+      },
+      "ReminderStoredCard": {
+        "properties": {
+          "tool": {
+            "type": "string",
+            "const": "confirm_reminder",
+            "title": "Tool"
+          },
+          "data": {
+            "$ref": "#/components/schemas/ReminderStoredResult"
+          }
+        },
+        "type": "object",
+        "required": [
+          "tool",
+          "data"
+        ],
+        "title": "ReminderStoredCard",
+        "description": "A reminder just stored."
+      },
+      "ReminderStoredResult": {
+        "properties": {
+          "speech": {
+            "type": "string",
+            "title": "Speech"
+          },
+          "reminder": {
+            "$ref": "#/components/schemas/ReminderCard"
+          }
+        },
+        "type": "object",
+        "required": [
+          "speech",
+          "reminder"
+        ],
+        "title": "ReminderStoredResult",
+        "description": "The reminder this confirmation stored."
+      },
+      "Role": {
+        "type": "string",
+        "enum": [
+          "family_physician",
+          "specialist",
+          "pharmacist",
+          "nurse",
+          "other_clinician",
+          "self"
+        ],
+        "title": "Role",
+        "description": "Care-team role the user assigns to a session at import."
+      },
+      "SegmentCard": {
+        "properties": {
+          "start": {
+            "type": "string",
+            "format": "date",
+            "title": "Start"
+          },
+          "end": {
+            "type": "string",
+            "format": "date",
+            "title": "End"
+          },
+          "values": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Values"
+          },
+          "temporary": {
+            "type": "boolean",
+            "title": "Temporary"
+          },
+          "end_captured": {
+            "type": "boolean",
+            "title": "End Captured"
+          }
+        },
+        "type": "object",
+        "required": [
+          "start",
+          "end",
+          "values",
+          "temporary",
+          "end_captured"
+        ],
+        "title": "SegmentCard",
+        "description": "A run of days with the same value; ``end`` is exclusive."
+      },
+      "SelfRating": {
+        "type": "string",
+        "enum": [
+          "low",
+          "medium",
+          "high"
+        ],
+        "title": "SelfRating",
+        "description": "The extractor's own rating. Internal only; never shown as a number."
+      },
+      "SessionView": {
+        "properties": {
+          "token": {
+            "type": "string",
+            "title": "Token"
+          }
+        },
+        "type": "object",
+        "required": [
+          "token"
+        ],
+        "title": "SessionView",
+        "description": "The per-launch token the web app sends on every other request."
+      },
+      "Signals": {
+        "properties": {
+          "evidence": {
+            "type": "string",
+            "const": "verified",
+            "title": "Evidence",
+            "default": "verified"
+          },
+          "date": {
+            "$ref": "#/components/schemas/DateBasis"
+          },
+          "entity": {
+            "$ref": "#/components/schemas/EntityMatch"
+          },
+          "speaker": {
+            "$ref": "#/components/schemas/SpeakerBasis"
+          },
+          "model": {
+            "$ref": "#/components/schemas/SelfRating"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "date",
+          "entity",
+          "speaker",
+          "model"
+        ],
+        "title": "Signals",
+        "description": "Categorical review signals shown instead of confidence numbers."
+      },
+      "SourceInfo": {
+        "properties": {
+          "clinician": {
+            "type": "string",
+            "title": "Clinician"
+          },
+          "role": {
+            "$ref": "#/components/schemas/Role"
+          },
+          "date": {
+            "type": "string",
+            "format": "date",
+            "title": "Date"
+          },
+          "quote": {
+            "type": "string",
+            "title": "Quote"
+          }
+        },
+        "type": "object",
+        "required": [
+          "clinician",
+          "role",
+          "date",
+          "quote"
+        ],
+        "title": "SourceInfo",
+        "description": "Where an item came from: who said it, when, and the exact words."
+      },
+      "SpeakerBasis": {
+        "type": "string",
+        "enum": [
+          "session_label",
+          "content_inferred"
+        ],
+        "title": "SpeakerBasis",
+        "description": "Where a commit's speaker role came from."
+      },
+      "TurnRequest": {
+        "properties": {
+          "text": {
+            "type": "string",
+            "maxLength": 500,
+            "minLength": 1,
+            "title": "Text"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "text"
+        ],
+        "title": "TurnRequest",
+        "description": "One spoken or typed request."
+      },
+      "TurnResult": {
+        "properties": {
+          "speech": {
+            "type": "string",
+            "title": "Speech"
+          },
+          "card": {
+            "anyOf": [
+              {
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/VisitUpdatesCard"
+                  },
+                  {
+                    "$ref": "#/components/schemas/WhatsChangedCard"
+                  },
+                  {
+                    "$ref": "#/components/schemas/PlanDayCard"
+                  },
+                  {
+                    "$ref": "#/components/schemas/OpenQuestionsCard"
+                  },
+                  {
+                    "$ref": "#/components/schemas/ReminderProposalCard"
+                  },
+                  {
+                    "$ref": "#/components/schemas/ItemsAddedCard"
+                  },
+                  {
+                    "$ref": "#/components/schemas/ReminderStoredCard"
+                  },
+                  {
+                    "$ref": "#/components/schemas/VisitAddedCard"
+                  },
+                  {
+                    "$ref": "#/components/schemas/DataDeletedCard"
+                  }
+                ],
+                "discriminator": {
+                  "propertyName": "tool",
+                  "mapping": {
+                    "add_visit": "#/components/schemas/VisitAddedCard",
+                    "confirm_items": "#/components/schemas/ItemsAddedCard",
+                    "confirm_reminder": "#/components/schemas/ReminderStoredCard",
+                    "delete_my_data": "#/components/schemas/DataDeletedCard",
+                    "open_questions": "#/components/schemas/OpenQuestionsCard",
+                    "plan_for_day": "#/components/schemas/PlanDayCard",
+                    "propose_reminder": "#/components/schemas/ReminderProposalCard",
+                    "visit_updates": "#/components/schemas/VisitUpdatesCard",
+                    "whats_changed": "#/components/schemas/WhatsChangedCard"
+                  }
+                }
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Card"
+          },
+          "pending": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PendingView"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "error": {
+            "type": "boolean",
+            "title": "Error",
+            "default": false
+          }
+        },
+        "type": "object",
+        "required": [
+          "speech"
+        ],
+        "title": "TurnResult",
+        "description": "What the simulator says and shows after one turn."
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      },
+      "VisitAddedCard": {
+        "properties": {
+          "tool": {
+            "type": "string",
+            "const": "add_visit",
+            "title": "Tool"
+          },
+          "data": {
+            "$ref": "#/components/schemas/VisitAddedResult"
+          }
+        },
+        "type": "object",
+        "required": [
+          "tool",
+          "data"
+        ],
+        "title": "VisitAddedCard",
+        "description": "A visit just added from the inbox."
+      },
+      "VisitAddedResult": {
+        "properties": {
+          "speech": {
+            "type": "string",
+            "title": "Speech"
+          },
+          "visit": {
+            "$ref": "#/components/schemas/VisitCard"
+          },
+          "created": {
+            "type": "integer",
+            "title": "Created"
+          },
+          "rejected": {
+            "type": "integer",
+            "title": "Rejected"
+          }
+        },
+        "type": "object",
+        "required": [
+          "speech",
+          "visit",
+          "created",
+          "rejected"
+        ],
+        "title": "VisitAddedResult",
+        "description": "The visit added and what compiling it produced."
+      },
+      "VisitCard": {
+        "properties": {
+          "visit_id": {
+            "type": "string",
+            "title": "Visit Id"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "clinician": {
+            "type": "string",
+            "title": "Clinician"
+          },
+          "role": {
+            "$ref": "#/components/schemas/Role"
+          },
+          "date": {
+            "type": "string",
+            "format": "date",
+            "title": "Date"
+          },
+          "added": {
+            "type": "boolean",
+            "title": "Added"
+          }
+        },
+        "type": "object",
+        "required": [
+          "visit_id",
+          "title",
+          "clinician",
+          "role",
+          "date",
+          "added"
+        ],
+        "title": "VisitCard",
+        "description": "One visit in the inbox."
+      },
+      "VisitListResult": {
+        "properties": {
+          "speech": {
+            "type": "string",
+            "title": "Speech"
+          },
+          "visits": {
+            "items": {
+              "$ref": "#/components/schemas/VisitCard"
+            },
+            "type": "array",
+            "title": "Visits"
+          }
+        },
+        "type": "object",
+        "required": [
+          "speech",
+          "visits"
+        ],
+        "title": "VisitListResult",
+        "description": "Every visit in the inbox."
+      },
+      "VisitUpdatesCard": {
+        "properties": {
+          "tool": {
+            "type": "string",
+            "const": "visit_updates",
+            "title": "Tool"
+          },
+          "data": {
+            "$ref": "#/components/schemas/VisitUpdatesResult"
+          }
+        },
+        "type": "object",
+        "required": [
+          "tool",
+          "data"
+        ],
+        "title": "VisitUpdatesCard",
+        "description": "New items from a visit, awaiting confirmation."
+      },
+      "VisitUpdatesResult": {
+        "properties": {
+          "speech": {
+            "type": "string",
+            "title": "Speech"
+          },
+          "clinician": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Clinician"
+          },
+          "visit_date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Visit Date"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ItemCard"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "confirmation": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PendingConfirmation"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "speech",
+          "clinician",
+          "visit_date",
+          "items",
+          "confirmation"
+        ],
+        "title": "VisitUpdatesResult",
+        "description": "New items from one visit, and the confirmation that adds them."
+      },
+      "WhatsChangedCard": {
+        "properties": {
+          "tool": {
+            "type": "string",
+            "const": "whats_changed",
+            "title": "Tool"
+          },
+          "data": {
+            "$ref": "#/components/schemas/WhatsChangedResult"
+          }
+        },
+        "type": "object",
+        "required": [
+          "tool",
+          "data"
+        ],
+        "title": "WhatsChangedCard",
+        "description": "What changed since the last visit."
+      },
+      "WhatsChangedResult": {
+        "properties": {
+          "speech": {
+            "type": "string",
+            "title": "Speech"
+          },
+          "changes": {
+            "items": {
+              "$ref": "#/components/schemas/ChangeCard"
+            },
+            "type": "array",
+            "title": "Changes"
+          },
+          "open_questions": {
+            "type": "integer",
+            "title": "Open Questions"
+          }
+        },
+        "type": "object",
+        "required": [
+          "speech",
+          "changes",
+          "open_questions"
+        ],
+        "title": "WhatsChangedResult",
+        "description": "The CareDiff since the last visit and the open-question count."
+      }
+    }
+  }
+}

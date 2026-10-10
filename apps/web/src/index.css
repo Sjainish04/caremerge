@@ -1,0 +1,79 @@
+@import 'tailwindcss';
+
+/* Design tokens: the device (ink screen, fabric bezel), clinic paper, and Alexa's light. */
+@theme {
+  --color-ink: #1b2a41;
+  --color-ink-soft: #2a3d5a;
+  --color-paper: #fbfbf8;
+  --color-pencil: #5b6573;
+  --color-counter: #e3e8ee;
+  --color-bezel: #2b2f36;
+  --color-verified: #2f7d5b;
+  --color-highlighter: #e0a526;
+  --color-superseded: #9aa3ae;
+  --color-sky: #3b82c4;
+  --color-sky-deep: #1f5f99;
+  --color-alexa: #3fc8e4;
+
+  --font-sans: 'Atkinson Hyperlegible Next Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-quote: 'Source Serif 4 Variable', Georgia, serif;
+}
+
+@layer base {
+  html {
+    background-color: var(--color-counter);
+  }
+
+  body {
+    font-family: var(--font-sans);
+    color: var(--color-ink);
+    -webkit-font-smoothing: antialiased;
+  }
+}
+
+/* Alexa's light bar: the one moving thing on the page. */
+.light-bar {
+  position: absolute;
+  inset-inline: 12%;
+  bottom: 0;
+  height: 6px;
+  border-radius: 999px 999px 0 0;
+  background: linear-gradient(90deg, transparent, var(--color-alexa), #2563eb, var(--color-alexa), transparent);
+  background-size: 200% 100%;
+  opacity: 0;
+  transition: opacity 300ms ease;
+}
+
+.light-bar--listening {
+  opacity: 1;
+  animation: listen 1.2s ease-in-out infinite;
+}
+
+.light-bar--thinking {
+  opacity: 0.8;
+  animation: sweep 1.6s linear infinite;
+}
+
+.light-bar--speaking {
+  opacity: 1;
+  animation: sweep 0.9s linear infinite;
+}
+
+@keyframes listen {
+  50% {
+    opacity: 0.45;
+  }
+}
+
+@keyframes sweep {
+  to {
+    background-position: -200% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .light-bar {
+    animation: none !important;
+    transition: none;
+  }
+}

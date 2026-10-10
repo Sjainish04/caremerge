@@ -1,0 +1,29 @@
+{
+  "speech": "",
+  "visits": [
+    {
+      "visit_id": "visit-1",
+      "title": "Check-in",
+      "clinician": "Dr. Rivera",
+      "role": "family_physician",
+      "date": "2026-10-05",
+      "added": true
+    },
+    {
+      "visit_id": "visit-2",
+      "title": "Procedure planning",
+      "clinician": "Dr. Lee",
+      "role": "specialist",
+      "date": "2026-10-07",
+      "added": true
+    },
+    {
+      "visit_id": "visit-3",
+      "title": "Pharmacy pickup",
+      "clinician": "Pharmacist",
+      "role": "pharmacist",
+      "date": "2026-10-10",
+      "added": false
+    }
+  ]
+}

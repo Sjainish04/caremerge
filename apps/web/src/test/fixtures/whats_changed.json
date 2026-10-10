@@ -1,0 +1,95 @@
+{
+  "speech": "Since your last visit, 2 things changed in your care plan. Medication A goes from active to on hold starting Sunday, October 25, for your procedure. No end was captured. New: your procedure on Wednesday, October 28. 1 question needs clarifying.",
+  "card": {
+    "tool": "whats_changed",
+    "data": {
+      "speech": "Since your last visit, 2 things changed in your care plan. Medication A goes from active to on hold starting Sunday, October 25, for your procedure. No end was captured. New: your procedure on Wednesday, October 28. 1 question needs clarifying.",
+      "changes": [
+        {
+          "subject": "Medication A",
+          "dimension": "action",
+          "change": "changed",
+          "before": [
+            {
+              "start": "2026-10-19",
+              "end": "2026-12-18",
+              "values": [
+                "active"
+              ],
+              "temporary": false,
+              "end_captured": true
+            }
+          ],
+          "after": [
+            {
+              "start": "2026-10-19",
+              "end": "2026-10-25",
+              "values": [
+                "active"
+              ],
+              "temporary": false,
+              "end_captured": true
+            },
+            {
+              "start": "2026-10-25",
+              "end": "2026-12-18",
+              "values": [
+                "on hold"
+              ],
+              "temporary": true,
+              "end_captured": false
+            }
+          ],
+          "future_effective": true,
+          "temporary": true,
+          "end_not_captured": true,
+          "sources": [
+            {
+              "clinician": "Dr. Rivera",
+              "role": "family_physician",
+              "date": "2026-10-05",
+              "quote": "keep taking Medication A, one tablet every morning"
+            },
+            {
+              "clinician": "Dr. Lee",
+              "role": "specialist",
+              "date": "2026-10-07",
+              "quote": "hold Medication A starting Sunday, October 25"
+            }
+          ]
+        },
+        {
+          "subject": "procedure",
+          "dimension": "scheduled_for",
+          "change": "added",
+          "before": [],
+          "after": [
+            {
+              "start": "2026-10-19",
+              "end": "2026-12-18",
+              "values": [
+                "Wednesday, October 28"
+              ],
+              "temporary": false,
+              "end_captured": true
+            }
+          ],
+          "future_effective": false,
+          "temporary": false,
+          "end_not_captured": false,
+          "sources": [
+            {
+              "clinician": "Dr. Lee",
+              "role": "specialist",
+              "date": "2026-10-07",
+              "quote": "Your procedure is on Wednesday, October 28"
+            }
+          ]
+        }
+      ],
+      "open_questions": 1
+    }
+  },
+  "pending": null,
+  "error": false
+}
