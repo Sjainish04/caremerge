@@ -12,6 +12,7 @@ from datetime import UTC, datetime, timedelta
 
 import structlog
 
+from caremerge_addon import speech
 from caremerge_addon.errors import RecordNotFoundError
 from caremerge_addon.pipeline.context import PipelineContext
 from caremerge_addon.settings import AddonSettings
@@ -119,6 +120,6 @@ def _restatement(commit: CareCommit, ctx: PipelineContext) -> dict[str, str]:
     captured = commit.source.captured_at.astimezone(ctx.settings.tz).date()
     return {
         "source": commit.source.label,
-        "date": captured.isoformat(),
+        "date": speech.month_day(captured),
         "quote": commit.source.evidence[0].quote,
     }

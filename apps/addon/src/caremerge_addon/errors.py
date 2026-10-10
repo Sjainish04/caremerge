@@ -1,4 +1,4 @@
-"""Errors raised by the add-on when a referenced record is missing."""
+"""Errors raised by the add-on: missing records and malformed requests."""
 
 
 class AddonError(Exception):
@@ -12,3 +12,7 @@ class RecordNotFoundError(AddonError):
         self.kind = kind
         self.record_id = record_id
         super().__init__(f"{kind} not found: {record_id}")
+
+
+class InvalidRequestError(AddonError):
+    """Raised when a tool's arguments are individually valid but contradict each other."""

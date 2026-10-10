@@ -20,7 +20,7 @@ from caremerge_core.enums import ActionState, ChangeType, Dimension, IssueStatus
 from caremerge_core.policy import PolicyCode, PolicyViolationError
 
 QUESTION = "When should the temporary hold of Medication A for the procedure end?"
-RESTATEMENT = 'Reminder from Dr. Lee (2026-10-07): "hold Medication A starting Sunday, October 25"'
+RESTATEMENT = 'Reminder from Dr. Lee (October 7): "hold Medication A starting Sunday, October 25"'
 DEMO_NOW = datetime(2026, 10, 19, 14, 0, tzinfo=UTC)
 VisitAdder = Callable[[int], list[str]]
 

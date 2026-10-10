@@ -106,6 +106,11 @@ def spoken_date(day: date) -> str:
     return f"{_WEEKDAYS[day.weekday()]}, {_MONTHS[day.month - 1]} {day.day}"
 
 
+def month_day(day: date) -> str:
+    """Return a short date for written text: ``October 7``."""
+    return f"{_MONTHS[day.month - 1]} {day.day}"
+
+
 def spoken_time(moment: time) -> str:
     """Return a time on a twelve-hour clock: ``10 AM``, ``2:30 PM``."""
     hour = moment.hour % 12 or 12
@@ -353,8 +358,8 @@ def _changed(
         timing_parts.append(render(TemplateId.PHRASE_FOR_CONTEXT, {"context": context}))
     params = {
         "subject": subject,
-        "old": _value_words(entry.dimension, old.values),
-        "new": _value_words(entry.dimension, new.values),
+        "old": value_words(entry.dimension, old.values),
+        "new": value_words(entry.dimension, new.values),
         "timing": f" {', '.join(timing_parts)}" if timing_parts else "",
     }
     if entry.dimension is Dimension.ACTION:
@@ -367,7 +372,8 @@ def _changed(
     return [said]
 
 
-def _value_words(dimension: Dimension, values: Sequence[str]) -> str:
+def value_words(dimension: Dimension, values: Sequence[str]) -> str:
+    """Return dimension values as spoken words, e.g. ``on hold`` or ``every morning``."""
     return join_list([_one_value(dimension, value) for value in values])
 
 
