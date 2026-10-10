@@ -44,7 +44,7 @@ class CareGraphRepository(Protocol):
         ...
 
     def add_source(self, source: SourceEvent) -> SourceEvent:
-        """Store a source unless its Bee item exists; return the stored record."""
+        """Store a source unless its kind and external ID exist; return the stored one."""
         ...
 
     def put_entity(self, entity: Entity) -> None:

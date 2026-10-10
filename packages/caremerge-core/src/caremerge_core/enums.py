@@ -109,11 +109,11 @@ class Role(StrEnum):
     SELF = "self"
 
 
-class BeeItemType(StrEnum):
-    """The kind of Bee item a source was imported from."""
+class SourceKind(StrEnum):
+    """Where a source came from: a visit transcript or, with F13, a spoken note."""
 
-    CONVERSATION = "conversation"
-    VOICE_NOTE = "voice_note"
+    VISIT = "visit"
+    NOTE = "note"
 
 
 class ReviewState(StrEnum):
@@ -166,7 +166,7 @@ class LintCode(StrEnum):
 
 
 class ActionState(StrEnum):
-    """Lifecycle of a proposed Bee write."""
+    """Lifecycle of a proposed reminder."""
 
     PROPOSED = "proposed"
     CONFIRMED = "confirmed"
@@ -175,9 +175,59 @@ class ActionState(StrEnum):
 
 
 class TemplateId(StrEnum):
-    """Registered user-facing text templates (principle P9)."""
+    """Registered user-facing text templates, on screen and spoken (principle P9)."""
 
     L002_MESSAGE = "l002_message"
     L002_QUESTION = "l002_question"
     L002_QUESTION_NO_CONTEXT = "l002_question_no_context"
     ASK_CARE_TEAM = "ask_care_team"
+    REMIND_VERIFIED_INSTRUCTION = "remind_verified_instruction"
+    SPEAK_VISIT_UPDATES = "speak_visit_updates"
+    SPEAK_NO_VISIT_UPDATES = "speak_no_visit_updates"
+    SPEAK_ITEMS_ADDED = "speak_items_added"
+    SPEAK_VISIT_READY = "speak_visit_ready"
+    SPEAK_VISIT_ALREADY_ADDED = "speak_visit_already_added"
+    SPEAK_NO_CHANGES = "speak_no_changes"
+    SPEAK_CHANGES_INTRO = "speak_changes_intro"
+    SPEAK_CHANGE_STATE = "speak_change_state"
+    SPEAK_CHANGE_DETAIL = "speak_change_detail"
+    SPEAK_CHANGE_NEW = "speak_change_new"
+    SPEAK_CHANGE_REMOVED = "speak_change_removed"
+    SPEAK_END_NOT_CAPTURED = "speak_end_not_captured"
+    SPEAK_MORE_ON_SCREEN = "speak_more_on_screen"
+    SPEAK_QUESTIONS_PENDING = "speak_questions_pending"
+    SPEAK_PLAN_DAY = "speak_plan_day"
+    SPEAK_PLAN_EVENT = "speak_plan_event"
+    SPEAK_PLAN_CONFLICT = "speak_plan_conflict"
+    SPEAK_PLAN_NOTHING = "speak_plan_nothing"
+    SPEAK_PLAN_EMPTY = "speak_plan_empty"
+    SPEAK_PLAN_OVERVIEW = "speak_plan_overview"
+    SPEAK_SOURCE = "speak_source"
+    SPEAK_NOT_DECIDING = "speak_not_deciding"
+    SPEAK_NO_QUESTIONS = "speak_no_questions"
+    SPEAK_QUESTIONS = "speak_questions"
+    SPEAK_REMINDER_PROPOSAL = "speak_reminder_proposal"
+    SPEAK_REMINDER_ADDED = "speak_reminder_added"
+    SPEAK_NO_REMINDER_TOPIC = "speak_no_reminder_topic"
+    SPEAK_NOT_FOUND = "speak_not_found"
+    SPEAK_REFUSED = "speak_refused"
+    SPEAK_DATA_DELETED = "speak_data_deleted"
+    SPEAK_FALLBACK = "speak_fallback"
+    SPEAK_DECLINED = "speak_declined"
+    SPEAK_UNAVAILABLE = "speak_unavailable"
+    PHRASE_EVENT = "phrase_event"
+    PHRASE_EVENT_UNDATED = "phrase_event_undated"
+    PHRASE_FOLLOW_UP = "phrase_follow_up"
+    PHRASE_FOLLOW_UP_INTERVAL = "phrase_follow_up_interval"
+    PHRASE_FOLLOW_UP_DATE = "phrase_follow_up_date"
+    PHRASE_MONITORING = "phrase_monitoring"
+    PHRASE_MONITORING_UNDATED = "phrase_monitoring_undated"
+    PHRASE_MED_CONTINUE = "phrase_med_continue"
+    PHRASE_MED_START = "phrase_med_start"
+    PHRASE_MED_STOP = "phrase_med_stop"
+    PHRASE_MED_HOLD = "phrase_med_hold"
+    PHRASE_MED_RESUME = "phrase_med_resume"
+    PHRASE_MED_PLAIN = "phrase_med_plain"
+    PHRASE_STARTING = "phrase_starting"
+    PHRASE_UNTIL = "phrase_until"
+    PHRASE_FOR_CONTEXT = "phrase_for_context"

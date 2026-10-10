@@ -1,0 +1,34 @@
+{
+  "candidates": [
+    {
+      "kind": "medication_instruction",
+      "subject_text": "Medication A",
+      "entity": {"match": "new"},
+      "attributes": {"action": "continue", "dose_text": "one tablet", "time_of_day": "morning"},
+      "effective": {"date_basis": "none"},
+      "modality": "instruction",
+      "evidence": [{"utterance_id": "v1-u1", "quote": "keep taking Medication A, one tablet every morning"}],
+      "self_rating": "high"
+    },
+    {
+      "kind": "monitoring_instruction",
+      "subject_text": "blood pressure",
+      "entity": {"match": "new"},
+      "attributes": {"days_of_week": ["tuesday", "friday"]},
+      "effective": {"date_basis": "none"},
+      "modality": "instruction",
+      "evidence": [{"utterance_id": "v1-u2", "quote": "Check your blood pressure on Tuesdays and Fridays"}],
+      "self_rating": "high"
+    },
+    {
+      "kind": "follow_up",
+      "subject_text": "follow-up visit",
+      "entity": {"match": "new"},
+      "attributes": {"interval_text": "four weeks"},
+      "effective": {"date_basis": "relative", "date_raw": "in four weeks"},
+      "modality": "instruction",
+      "evidence": [{"utterance_id": "v1-u3", "quote": "Let's follow up in four weeks"}],
+      "self_rating": "medium"
+    }
+  ]
+}

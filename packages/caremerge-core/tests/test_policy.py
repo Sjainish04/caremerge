@@ -1,4 +1,4 @@
-"""Tests for the deterministic Bee-write policy gate (spec §9.10)."""
+"""Tests for the deterministic reminder policy gate (spec §9.10)."""
 
 from collections.abc import Callable
 from datetime import UTC, datetime
@@ -14,7 +14,7 @@ from caremerge_core.enums import (
     TemplateId,
 )
 from caremerge_core.models import Action, CareCommit, Issue
-from caremerge_core.policy import PolicyCode, PolicyViolationError, check_bee_write
+from caremerge_core.policy import PolicyCode, PolicyViolationError, check_reminder
 from caremerge_core.questions import render
 
 NOW = datetime(2026, 10, 19, 14, 0, tzinfo=UTC)
@@ -60,7 +60,7 @@ def _check(
     state: ReviewState = ReviewState.VERIFIED,
 ) -> None:
     commits = {"cc_hold": commit("cc_hold", state=state)}
-    check_bee_write(action, commits, {"iss_1": issue or _issue()})
+    check_reminder(action, commits, {"iss_1": issue or _issue()})
 
 
 def test_confirmed_template_action_on_an_open_issue_passes(commit: Builder) -> None:
@@ -72,7 +72,8 @@ def test_confirmed_template_action_on_an_open_issue_passes(commit: Builder) -> N
     [
         ({"state": ActionState.PROPOSED}, PolicyCode.NOT_CONFIRMED),
         ({"confirmation_id": None}, PolicyCode.NOT_CONFIRMED),
-        ({"bee_todo_id": "todo_1"}, PolicyCode.ALREADY_EXECUTED),
+        ({"executed_at": NOW}, PolicyCode.ALREADY_EXECUTED),
+        ({"state": ActionState.EXECUTED}, PolicyCode.ALREADY_EXECUTED),
         ({"issue_ids": ()}, PolicyCode.NO_REFERENCES),
         ({"issue_ids": ("iss_404",)}, PolicyCode.UNKNOWN_ISSUE),
         ({"issue_ids": (), "commit_ids": ("cc_404",)}, PolicyCode.UNKNOWN_COMMIT),
@@ -99,4 +100,51 @@ def test_issue_must_still_be_open(commit: Builder) -> None:
 def test_commits_behind_the_issue_must_be_verified(commit: Builder) -> None:
     with pytest.raises(PolicyViolationError) as caught:
         _check(_action(), commit, state=ReviewState.CANDIDATE)
+    assert caught.value.codes == (PolicyCode.UNVERIFIED_COMMIT,)
+
+
+REMINDER = {"source": "Dr. Rivera", "date": "2026-10-05", "quote": "keep taking Medication A"}
+
+
+def _reminder(params: dict[str, str], **overrides: object) -> Action:
+    action = Action(
+        action_id="act_2",
+        template_id=TemplateId.REMIND_VERIFIED_INSTRUCTION,
+        params=params,
+        text=render(TemplateId.REMIND_VERIFIED_INSTRUCTION, params),
+        alarm_at=NOW,
+        commit_ids=("cc_hold",),
+        state=ActionState.CONFIRMED,
+        confirmation_id="conf_1",
+        created_at=NOW,
+    )
+    return action.model_copy(update=overrides)
+
+
+def test_reminder_restating_a_verified_commit_passes(commit: Builder) -> None:
+    reminder = _reminder(REMINDER)
+    _check(reminder, commit)
+    assert reminder.text == 'Reminder from Dr. Rivera (2026-10-05): "keep taking Medication A"'
+
+
+@pytest.mark.parametrize(
+    ("params", "overrides"),
+    [
+        ({**REMINDER, "quote": "double the dose"}, {}),
+        ({**REMINDER, "source": "Dr. Lee"}, {}),
+        (REMINDER, {"commit_ids": ("cc_hold", "cc_other")}),
+        (REMINDER, {"issue_ids": ("iss_1",)}),
+    ],
+)
+def test_reminder_must_restate_one_commits_quote_and_source(
+    commit: Builder, params: dict[str, str], overrides: dict[str, object]
+) -> None:
+    with pytest.raises(PolicyViolationError) as caught:
+        _check(_reminder(params, **overrides), commit)
+    assert PolicyCode.NOT_A_RESTATEMENT in caught.value.codes
+
+
+def test_reminder_from_an_unverified_commit_is_refused(commit: Builder) -> None:
+    with pytest.raises(PolicyViolationError) as caught:
+        _check(_reminder(REMINDER), commit, state=ReviewState.CANDIDATE)
     assert caught.value.codes == (PolicyCode.UNVERIFIED_COMMIT,)

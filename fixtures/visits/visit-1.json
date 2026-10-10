@@ -1,0 +1,12 @@
+{
+  "visit_id": "visit-1",
+  "title": "Check-in",
+  "clinician": "Dr. Rivera",
+  "role": "family_physician",
+  "started_at": "2026-10-05T14:10:00Z",
+  "utterances": [
+    {"id": "v1-u1", "start_ms": 0, "text": "Alex, keep taking Medication A, one tablet every morning."},
+    {"id": "v1-u2", "start_ms": 5200, "text": "Check your blood pressure on Tuesdays and Fridays and write it down."},
+    {"id": "v1-u3", "start_ms": 11800, "text": "Let's follow up in four weeks."}
+  ]
+}

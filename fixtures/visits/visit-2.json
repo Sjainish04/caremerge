@@ -1,0 +1,11 @@
+{
+  "visit_id": "visit-2",
+  "title": "Procedure planning",
+  "clinician": "Dr. Lee",
+  "role": "specialist",
+  "started_at": "2026-10-07T18:22:00Z",
+  "utterances": [
+    {"id": "v2-u1", "start_ms": 0, "text": "Your procedure is on Wednesday, October 28."},
+    {"id": "v2-u2", "start_ms": 4200, "text": "Please hold Medication A starting Sunday, October 25."}
+  ]
+}

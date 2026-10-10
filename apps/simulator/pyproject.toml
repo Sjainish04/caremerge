@@ -1,0 +1,26 @@
+[project]
+name = "caremerge-simulator"
+version = "0.1.0"
+description = "Simulated Alexa+ host: routes requests to CareMerge tools and handles confirmations"
+requires-python = ">=3.12"
+dependencies = [
+    "caremerge-addon",
+    "caremerge-core",
+    "fastapi>=0.143.0",
+    "mcp>=2.3.0",
+    "pydantic>=2.13.5",
+    "pydantic-settings>=2.15.0",
+    "structlog>=26.1.0",
+    "uvicorn>=0.54.0",
+]
+
+[build-system]
+requires = ["uv_build>=0.10.0,<0.11.0"]
+build-backend = "uv_build"
+
+[tool.uv.sources]
+caremerge-core = { workspace = true }
+caremerge-addon = { workspace = true }
+
+[project.scripts]
+caremerge-sim = "caremerge_simulator.cli:main"

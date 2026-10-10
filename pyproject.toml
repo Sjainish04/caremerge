@@ -3,19 +3,26 @@ name = "caremerge-workspace"
 version = "0.1.0"
 requires-python = ">=3.12"
 dependencies = [
+    "caremerge-addon",
     "caremerge-core",
+    "caremerge-simulator",
 ]
 
 [tool.uv.workspace]
 members = [
     "packages/caremerge-core",
+    "apps/addon",
+    "apps/simulator",
 ]
 
 [tool.uv.sources]
 caremerge-core = { workspace = true }
+caremerge-addon = { workspace = true }
+caremerge-simulator = { workspace = true }
 
 [dependency-groups]
 dev = [
+    "httpx2>=2.13.1",
     "mypy>=2.4.0",
     "pytest>=9.1.1",
     "ruff>=0.16.10",
@@ -31,13 +38,13 @@ select = ["E", "F", "W", "I", "B", "UP", "D", "N", "S", "SIM", "RUF"]
 ignore = ["D105", "D107"]
 
 [tool.ruff.lint.isort]
-known-first-party = ["caremerge_core"]
+known-first-party = ["caremerge_core", "caremerge_addon", "caremerge_simulator"]
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"
 
 [tool.ruff.lint.per-file-ignores]
-"**/tests/**" = ["D", "S101"]
+"**/tests/**" = ["D", "S101", "S105", "S106"]
 
 [tool.mypy]
 python_version = "3.12"
@@ -45,5 +52,5 @@ strict = true
 plugins = ["pydantic.mypy"]
 
 [tool.pytest.ini_options]
-testpaths = ["packages/caremerge-core/tests"]
+testpaths = ["packages/caremerge-core/tests", "apps/addon/tests", "apps/simulator/tests"]
 addopts = ["-q", "--import-mode=importlib"]
